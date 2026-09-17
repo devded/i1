@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oldsmar SCADA Chemical Dosing Interlock Console</title>
+  
+  <!-- Inter font from Google Fonts with standard fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/static/styles.css">
+
+  <!-- Local Chart.js & Annotation Plugin (offline-ready for hackathon) -->
+  <script src="/static/chart.min.js"></script>
+  <script src="/static/chartjs-plugin-annotation.min.js"></script>
+</head>
+<body>
+
+  <!-- TOP HEADER STRIP -->
+  <header class="header-strip">
+    <div class="brand-section">
+      <div class="brand-icon">⚡</div>
+      <div>
+        <div class="brand-title">OLDSMAR WATER TREATMENT FACILITY <span style="color: hsl(var(--primary)); font-weight: 500;">// SCADA CONTROL</span></div>
+        <div class="brand-subtitle">SODIUM HYDROXIDE (NaOH) CHEMICAL DOSING INTERLOCK</div>
+      </div>
+    </div>
+
+    <!-- SIS PHYSICAL KEY SWITCH STAND-IN -->
+    <div class="sis-key-switch-container">
+      <label class="switch">
+        <input type="checkbox" id="interlock-toggle" checked>
+        <span class="slider"></span>
+      </label>
+      <div class="switch-label-group">
+        <div class="switch-title">
+          <span>SIS SAFETY INTERLOCK</span>
+          <span id="interlock-badge" class="badge badge-outline">ENGAGED</span>
+        </div>
+        <div class="switch-subtext">Physical Key Switch Stand-in (IEC 61511 Safety Instrumented System)</div>
+      </div>
+    </div>
+
+    <!-- TELEMETRY STATUS PILL -->
+    <div class="header-telemetry">
+      <div id="status-pill" class="status-pill nominal">
+        <span class="status-dot">●</span>
+        <span id="status-text">NOMINAL OPERATION</span>
+      </div>
+      <div class="meta-pill mono" id="run-id-pill">RUN: <span id="run-id-text">INIT...</span></div>
+      <div class="meta-pill mono" id="uptime-pill">UPTIME: <span id="uptime-text">0.0s</span></div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT GRID: ONE SCREEN, NO SCROLLING -->
+  <main class="main-viewport">
+    
+    <!-- LEFT PANEL: CHARTS & STATS -->
+    <section class="left-panel">
+      
+      <!-- UPPER HALF: pH CHART (THE MONEY SHOT) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>Finished Water Acidity / Alkalinity (pH & Chemical Harm)</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem; font-size: 0.68rem; font-weight: 600;">
+            <span style="color: #4ade80;">■ SAFE: 6.5–8.5</span>
+            <span style="color: #fbbf24;">■ ELEVATED: 8.5–10.0</span>
+            <span style="color: #f87171;">■ DANGEROUS CAUSTIC: >10.0</span>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="phChart"></canvas>
+        </div>
+      </div>
+
+      <!-- LOWER SPLIT ROW: SENSOR READINGS & DOSE GHOST LINE -->
+      <div class="charts-split-row">
+        
+        <!-- SENSOR CHART: PRIMARY VS VERIFICATION -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>Dual Sensor Channels (Primary vs Verification)</span>
+            </div>
+            <span id="divergence-badge" class="badge badge-secondary">ALIGNED (0%)</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="sensorChart"></canvas>
+          </div>
+        </div>
+
+        <!-- DOSE CHART: THE GHOST LINE -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>Metering Pump Command (Requested vs Actual Dose)</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; font-size: 0.68rem; font-weight: 600;">
+              <span style="color: #f87171;">- - - REQUESTED (SCADA)</span>
+              <span style="color: #38bdf8;">─── ACTUAL (ACTUATOR)</span>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="doseChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- STAT CARDS ROW -->
+      <div class="stat-row">
+        
+        <div class="stat-card">
+          <div class="stat-label">
+            <span>Water Flow Rate</span>
+            <span class="mono">Q_in</span>
+          </div>
+          <div class="stat-value-container">
+            <span id="stat-flow" class="stat-value tabular-nums">50.0</span>
+            <span class="stat-unit">L/s</span>
+          </div>
+          <div id="stat-flow-delta" class="stat-delta delta-flat">--</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">
+            <span>NaOH Feed Rate</span>
+            <span class="mono">Ṁ_chem</span>
+          </div>
+          <div class="stat-value-container">
+            <span id="stat-feed" class="stat-value tabular-nums">5000</span>
+            <span class="stat-unit">mg/s</span>
+          </div>
+          <div id="stat-feed-delta" class="stat-delta delta-flat">--</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">
+            <span>Resulting Concentration</span>
+            <span class="mono">C_pipe</span>
+          </div>
+          <div class="stat-value-container">
+            <span id="stat-resulting" class="stat-value tabular-nums">100.0</span>
+            <span class="stat-unit">ppm</span>
+          </div>
+          <div id="stat-resulting-delta" class="stat-delta delta-flat">--</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">
+            <span>Finished Water pH</span>
+            <span id="ph-band-badge" class="badge badge-outline">SAFE</span>
+          </div>
+          <div class="stat-value-container">
+            <span id="stat-ph" class="stat-value tabular-nums ph-safe">7.60</span>
+            <span class="stat-unit">pH</span>
+          </div>
+          <div id="stat-ph-delta" class="stat-delta delta-flat">--</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">
+            <span>Active Pump Dose</span>
+            <span class="mono">D_act</span>
+          </div>
+          <div class="stat-value-container">
+            <span id="stat-dose" class="stat-value tabular-nums">100.0</span>
+            <span class="stat-unit">ppm</span>
+          </div>
+          <div id="stat-dose-delta" class="stat-delta delta-flat">--</div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- RIGHT PANEL: ATTACK INJECTION DECK & SIS EVENT LOG -->
+    <aside class="right-panel">
+      
+      <!-- ATTACK CONTROL DECK -->
+      <div class="card controls-card">
+        <div class="card-header">
+          <div class="card-title">Cyberattack Vector Injection</div>
+          <span id="active-attack-badge" class="badge badge-secondary">STANDBY</span>
+        </div>
+
+        <div class="control-buttons-grid">
+          <button id="btn-attack-oldsmar" class="btn btn-destructive">
+            <span>⚠️ 1. Oldsmar Spike (11,100 ppm)</span>
+          </button>
+          <button id="btn-attack-stealth" class="btn btn-destructive">
+            <span>🎯 2. Single-Channel Stealth (135 ppm)</span>
+          </button>
+          <button id="btn-attack-ramp" class="btn btn-destructive">
+            <span>📈 3. Slow Ramp Dual (+35 ppm/s)</span>
+          </button>
+          <button id="btn-attack-flow" class="btn btn-destructive">
+            <span>💧 4. Flow Falsification (15 L/s)</span>
+          </button>
+          <button id="btn-attack-stop" class="btn btn-secondary">
+            <span>■ Stop Injection (Restore Nominal)</span>
+          </button>
+          <button id="btn-reset" class="btn btn-outline">
+            <span>↺ Reset System Simulation</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- AUDIT EVENT LOG -->
+      <div class="card log-card">
+        <div class="card-header">
+          <div class="card-title">SIS Interlock Event Audit Log</div>
+          <span id="event-count-badge" class="badge badge-secondary">0 EVENTS</span>
+        </div>
+        <div id="event-log" class="event-list">
+          <!-- Dynamic events populated by JS -->
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- Application Logic -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

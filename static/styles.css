@@ -1,0 +1,616 @@
+/* 
+ * OLDSMAR SCADA SAFETY INTERLOCK CONSOLE
+ * Design System: shadcn/ui dark tokens replicated in pure vanilla CSS
+ */
+
+:root {
+  --background: 224 71% 4%;           /* Deep dark slate */
+  --foreground: 210 40% 98%;          /* Crisp near-white */
+  
+  --card: 224 71% 6%;                /* Elevated card background */
+  --card-foreground: 210 40% 98%;
+  
+  --popover: 224 71% 6%;
+  --popover-foreground: 210 40% 98%;
+  
+  --primary: 199 89% 48%;             /* Industrial Cyan #0ea5e9 */
+  --primary-foreground: 210 40% 98%;
+  
+  --secondary: 217 33% 14%;           /* Subdued slate */
+  --secondary-foreground: 210 40% 98%;
+  
+  --muted: 217 33% 12%;               /* Muted surface */
+  --muted-foreground: 215 20% 65%;    /* Muted label text */
+  
+  --accent: 217 33% 17%;
+  --accent-foreground: 210 40% 98%;
+  
+  --destructive: 0 84% 60%;          /* Danger Red #ef4444 */
+  --destructive-foreground: 210 40% 98%;
+  
+  --warning: 38 92% 50%;             /* Hazard Amber #f59e0b */
+  --warning-foreground: 224 71% 4%;
+  
+  --success: 142 71% 45%;            /* Nominal Green #22c55e */
+  --success-foreground: 224 71% 4%;
+  
+  --border: 217 33% 17%;             /* 1px subtle card borders */
+  --input: 217 33% 17%;
+  --ring: 199 89% 48%;
+  
+  --radius: 0.5rem;                  /* 8px radius */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+  border: 2px solid transparent;
+}
+
+/* Tabular numerals for jitter-free telemetry numbers */
+.tabular-nums, .stat-value, .badge, .mono {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Sustained 3-second block choreography */
+body.block-active {
+  border-color: hsl(var(--destructive));
+  box-shadow: inset 0 0 45px rgba(239, 68, 68, 0.45), 0 0 35px rgba(239, 68, 68, 0.55);
+}
+
+/* ==========================================================================
+   TOP HEADER STRIP
+   ========================================================================== */
+.header-strip {
+  height: 64px;
+  min-height: 64px;
+  background-color: hsl(var(--card));
+  border-bottom: 1px solid hsl(var(--border));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  gap: 1rem;
+  z-index: 10;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-icon {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, hsl(var(--primary)), #2563eb);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.brand-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-subtitle {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* SIS Physical Key Switch Stand-In */
+.sis-key-switch-container {
+  display: flex;
+  align-items: center;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.35rem 0.75rem;
+  gap: 0.75rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.switch-label-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.switch-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--foreground));
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.switch-subtext {
+  font-size: 0.65rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Industrial Switch Component */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #334155;
+  transition: .3s;
+  border-radius: 24px;
+  border: 1px solid hsl(var(--border));
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #94a3b8;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+input:checked + .slider {
+  background-color: hsl(var(--success));
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+  background-color: #ffffff;
+}
+
+/* Header Telemetry & Status Pill */
+.header-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.status-pill {
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.status-pill.nominal {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.status-pill.blocked {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.6);
+  animation: pulse-border 1.5s infinite;
+}
+
+.status-pill.danger {
+  background-color: rgba(239, 68, 68, 0.35);
+  color: #ffffff;
+  border-color: #ef4444;
+  animation: danger-flash 0.8s infinite alternate;
+}
+
+.meta-pill {
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+  background-color: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius);
+}
+
+/* ==========================================================================
+   MAIN VIEWPORT GRID (ONE SCREEN, NO SCROLLING)
+   ========================================================================== */
+.main-viewport {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: auto;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.left-panel {
+  display: grid;
+  grid-template-rows: 2.1fr 1.9fr auto;
+  gap: 0.75rem;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Right Panel: Controls + Audit Event Log */
+.right-panel {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.75rem;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Card Base */
+.card {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.card-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: hsl(var(--muted-foreground));
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.card-badge {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.chart-wrapper {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Lower charts split row */
+.charts-split-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  min-height: 0;
+}
+
+/* ==========================================================================
+   STAT CARDS ROW
+   ========================================================================== */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+  height: 92px;
+}
+
+.stat-card {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.6rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-value-container {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.stat-value {
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: hsl(var(--foreground));
+}
+
+.stat-unit {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-weight: 500;
+}
+
+.stat-delta {
+  font-size: 0.68rem;
+  font-weight: 600;
+  margin-top: 0.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.delta-up { color: #f87171; }
+.delta-down { color: #38bdf8; }
+.delta-flat { color: hsl(var(--muted-foreground)); }
+
+/* Dynamic pH Coloring */
+.ph-safe { color: #4ade80 !important; text-shadow: 0 0 12px rgba(74, 222, 128, 0.4); }
+.ph-elevated { color: #fbbf24 !important; text-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }
+.ph-dangerous { color: #f87171 !important; text-shadow: 0 0 15px rgba(248, 113, 113, 0.6); }
+
+/* ==========================================================================
+   ATTACK CONTROL DECK
+   ========================================================================== */
+.controls-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-buttons-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.4rem;
+}
+
+/* Shadcn Button Variants */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: 32px;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  outline: none;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-destructive {
+  background-color: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
+  border-color: rgba(239, 68, 68, 0.4);
+}
+.btn-destructive:hover {
+  background-color: #dc2626;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+}
+
+.btn-secondary {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  border-color: hsl(var(--border));
+}
+.btn-secondary:hover {
+  background-color: hsl(var(--accent));
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+.btn-outline:hover {
+  background-color: hsl(var(--accent));
+}
+
+/* ==========================================================================
+   EVENT LOG / AUDIT TRAIL
+   ========================================================================== */
+.log-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.event-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-right: 0.25rem;
+}
+
+.event-list::-webkit-scrollbar {
+  width: 4px;
+}
+.event-list::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+.event-item {
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  animation: slideIn 0.25s ease-out;
+  font-size: 0.72rem;
+}
+
+.event-item.blocked {
+  border-left: 3px solid hsl(var(--destructive));
+  background: rgba(239, 68, 68, 0.08);
+}
+.event-item.allowed {
+  border-left: 3px solid hsl(var(--success));
+}
+.event-item.attack {
+  border-left: 3px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+}
+.event-item.info {
+  border-left: 3px solid hsl(var(--primary));
+}
+
+.event-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.event-time {
+  font-size: 0.65rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.badge-destructive {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+.badge-outline {
+  background-color: transparent;
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+.badge-warning {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+}
+.badge-secondary {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--muted-foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.event-msg {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.event-detail {
+  font-size: 0.68rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.25;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 12px 2px rgba(239, 68, 68, 0.6);
+  }
+}
+
+@keyframes danger-flash {
+  from {
+    background-color: rgba(239, 68, 68, 0.8);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+  }
+  to {
+    background-color: rgba(185, 28, 28, 0.95);
+    box-shadow: 0 0 25px rgba(239, 68, 68, 1);
+  }
+}
