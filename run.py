@@ -30,19 +30,28 @@ def print_banner(host: str, port: int):
     print("  Press Ctrl+C to terminate cleanly.\n")
 
 
+def get_available_port(default_port=8000):
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        if s.connect_ex(('127.0.0.1', default_port)) != 0:
+            return default_port
+    return 8080
+
+
 def main():
     parser = argparse.ArgumentParser(description="Start Oldsmar SCADA Interlock Demo")
     parser.add_argument("--host", default="0.0.0.0", help="Host interface to bind (default: 0.0.0.0)")
-    parser.add_argument("--port", type=int, default=8000, help="Port to bind (default: 8000)")
+    parser.add_argument("--port", type=int, default=None, help="Port to bind (default: auto 8000 or 8080)")
     parser.add_argument("--reload", action="store_true", help="Enable auto-reloading for development")
     args = parser.parse_args()
 
-    print_banner(args.host, args.port)
+    port = args.port if args.port is not None else get_available_port(8000)
+    print_banner(args.host, port)
 
     uvicorn.run(
         "app.main:app",
         host=args.host,
-        port=args.port,
+        port=port,
         reload=args.reload,
         log_level="info"
     )
