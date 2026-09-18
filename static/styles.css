@@ -1,76 +1,87 @@
 /* 
- * OLDSMAR SCADA SAFETY INTERLOCK CONSOLE
- * Tailwind CSS + Flowbite Charts Utility Extensions
- * Default: Clean White Background with Light & Dark Theme Support
+ * OLDSMAR SCADA SAFETY INSTRUMENTED SYSTEM (IEC 61511)
+ * Clean Tailwind CSS & Flowbite Utility Extensions
+ * Design System: Precision Industrial Console
  */
 
 @layer base {
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     border: 2px solid transparent;
   }
 }
 
-/* Tabular Numerals & Monospace */
-.tabular-nums, .stat-value, .mono {
+/* Tabular Numerals & High-Precision Monospace */
+.tabular-nums, .stat-value, .mono, [font-mono] {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
 
-/* Sustained Block Border Glow Animation */
+/* Sustained Block Alert Glow (Sustained 3s on Cyber Trip) */
 body.block-active {
   border-color: #ef4444 !important;
-  box-shadow: inset 0 0 40px rgba(239, 68, 68, 0.18), 0 0 25px rgba(239, 68, 68, 0.25) !important;
+  box-shadow: inset 0 0 35px rgba(239, 68, 68, 0.16), 0 0 20px rgba(239, 68, 68, 0.22) !important;
 }
 
-/* Custom Styled Range Sliders */
+/* Precision Range Sliders */
 .styled-range {
   -webkit-appearance: none;
   width: 100%;
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 4px;
+  height: 5px;
+  background: #e2e8f0;
+  border-radius: 9999px;
   outline: none;
+  transition: background 0.15s ease;
 }
 .dark .styled-range {
-  background: #374151;
+  background: #27272a;
 }
 
 .styled-range::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #0284c7;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   border: 2px solid #ffffff;
-  transition: transform 0.1s ease;
+  transition: transform 0.1s ease, background 0.15s ease;
 }
 
 .styled-range::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.25);
+  background: #0369a1;
 }
 
-/* Clean Custom Scrollbar */
+.dark .styled-range::-webkit-slider-thumb {
+  border-color: #18181b;
+}
+
+/* Minimal Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
+  background: #cbd5e1;
+  border-radius: 9999px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: #3f3f46;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
-/* Flowbite Switch Toggle */
+/* Industrial Physical Toggle Switch (Flowbite / Toggle Pattern) */
 .flowbite-toggle {
   position: relative;
   display: inline-flex;
@@ -81,17 +92,18 @@ body.block-active {
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
 }
 .toggle-track {
-  width: 38px;
+  width: 36px;
   height: 20px;
-  background-color: #e5e7eb;
+  background-color: #cbd5e1;
   border-radius: 9999px;
   position: relative;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .dark .toggle-track {
-  background-color: #374151;
+  background-color: #3f3f46;
 }
 .toggle-thumb {
   width: 14px;
@@ -102,13 +114,56 @@ body.block-active {
   top: 3px;
   left: 3px;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 input:checked + .toggle-track {
   background-color: #10b981;
 }
 input:checked + .toggle-track .toggle-thumb {
-  transform: translateX(18px);
+  transform: translateX(16px);
+}
+
+/* Sidebar Navigation Items */
+.nav-item {
+  position: relative;
+  transition: all 0.15s ease-in-out;
+}
+.nav-item.active {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  font-weight: 600;
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 0 4px 4px 0;
+  background-color: #0284c7;
+}
+.dark .nav-item.active {
+  background-color: #27272a;
+  color: #f8fafc;
+}
+.dark .nav-item.active::before {
+  background-color: #38bdf8;
+}
+
+/* Attack Scenario Cards */
+.attack-scenario-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.attack-scenario-card:hover {
+  border-color: #94a3b8;
+}
+.dark .attack-scenario-card:hover {
+  border-color: #52525b;
+}
+.attack-scenario-card.active-exploit {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444, 0 4px 12px rgba(239, 68, 68, 0.1) !important;
 }
 
 /* SCADA Pipeline SVG */
@@ -119,56 +174,41 @@ input:checked + .toggle-track .toggle-thumb {
 }
 .scada-pipeline-svg rect {
   fill: #ffffff;
-  stroke: #e5e7eb;
+  stroke: #cbd5e1;
   transition: fill 0.2s ease, stroke 0.2s ease;
 }
 .dark .scada-pipeline-svg rect {
-  fill: #1f2937;
-  stroke: #374151;
+  fill: #18181b;
+  stroke: #3f3f46;
 }
 .scada-pipeline-svg text {
-  fill: #111827;
+  fill: #0f172a;
 }
 .dark .scada-pipeline-svg text {
-  fill: #f9fafb;
+  fill: #f8fafc;
 }
 
-/* Active navigation item styling */
-.nav-item.active {
-  background-color: #f3f4f6;
-  color: #111827;
-  font-weight: 600;
-}
-.dark .nav-item.active {
-  background-color: #1f2937;
-  color: #ffffff;
+/* ApexCharts Container & Isolation Wrappers */
+.chart-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow: hidden;
 }
 
-/* Active scenario card */
-.attack-scenario-card.active-exploit {
-  border-color: #ef4444 !important;
-  box-shadow: 0 0 0 1px #ef4444;
-}
-
-/* ApexCharts container height fixes */
 .apexcharts-canvas {
   margin: 0 auto;
 }
 
-#ph-chart-container {
-  width: 100%;
-  height: 100%;
-  min-height: 200px;
-}
-
+#ph-chart-container,
 #sensor-chart-container,
 #dose-chart-container {
   width: 100%;
   height: 100%;
-  min-height: 170px;
 }
 
-/* Badge Design Tokens (Tailwind / Flowbite Standard) */
+/* Badge Tokens */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -181,13 +221,13 @@ input:checked + .toggle-track .toggle-thumb {
   transition: all 0.15s ease;
 }
 .badge-outline {
-  border: 1px solid #e5e7eb;
-  color: #374151;
+  border: 1px solid #e2e8f0;
+  color: #334155;
   background-color: transparent;
 }
 .dark .badge-outline {
-  border-color: #374151;
-  color: #d1d5db;
+  border-color: #3f3f46;
+  color: #cbd5e1;
 }
 .badge-destructive {
   background-color: #fef2f2;
@@ -195,9 +235,9 @@ input:checked + .toggle-track .toggle-thumb {
   border: 1px solid #fecaca;
 }
 .dark .badge-destructive {
-  background-color: rgba(127, 29, 29, 0.4);
+  background-color: rgba(127, 29, 29, 0.35);
   color: #fca5a5;
-  border-color: rgba(153, 27, 27, 0.6);
+  border-color: rgba(153, 27, 27, 0.5);
 }
 .badge-warning {
   background-color: #fffbeb;
@@ -205,22 +245,22 @@ input:checked + .toggle-track .toggle-thumb {
   border: 1px solid #fde68a;
 }
 .dark .badge-warning {
-  background-color: rgba(120, 53, 15, 0.4);
+  background-color: rgba(120, 53, 15, 0.35);
   color: #fcd34d;
-  border-color: rgba(180, 83, 9, 0.6);
+  border-color: rgba(180, 83, 9, 0.5);
 }
 .badge-secondary {
-  background-color: #f3f4f6;
-  color: #4b5563;
-  border: 1px solid #e5e7eb;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
 }
 .dark .badge-secondary {
-  background-color: #374151;
-  color: #9ca3af;
-  border-color: #4b5563;
+  background-color: #27272a;
+  color: #a1a1aa;
+  border-color: #3f3f46;
 }
 
-/* Status Pill Tokens */
+/* System Status Pill Tokens */
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -229,6 +269,7 @@ input:checked + .toggle-track .toggle-thumb {
   border-radius: 0.375rem;
   font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
   transition: all 0.2s ease;
 }
 .status-pill.nominal {
@@ -237,9 +278,9 @@ input:checked + .toggle-track .toggle-thumb {
   border: 1px solid #a7f3d0;
 }
 .dark .status-pill.nominal {
-  background-color: rgba(6, 78, 59, 0.4);
+  background-color: rgba(6, 78, 59, 0.35);
   color: #6ee7b7;
-  border-color: rgba(4, 120, 87, 0.6);
+  border-color: rgba(4, 120, 87, 0.5);
 }
 .status-pill.tripped {
   background-color: #fef2f2;
@@ -248,33 +289,33 @@ input:checked + .toggle-track .toggle-thumb {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 .dark .status-pill.tripped {
-  background-color: rgba(127, 29, 29, 0.5);
+  background-color: rgba(127, 29, 29, 0.45);
   color: #fca5a5;
-  border-color: rgba(185, 28, 28, 0.6);
+  border-color: rgba(185, 28, 28, 0.5);
 }
 
-/* Live Event Log Entries */
+/* Event Log Entries */
 .event-entry {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  padding: 0.5rem 0.625rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
   font-size: 0.75rem;
   transition: all 0.15s ease;
 }
 .dark .event-entry {
-  border-color: #374151;
-  background-color: rgba(31, 41, 55, 0.6);
+  border-color: #27272a;
+  background-color: #18181b;
 }
 .event-entry.blocked {
   border-left: 3px solid #ef4444;
-  background-color: #fff5f5;
+  background-color: #fffaf0;
 }
 .dark .event-entry.blocked {
-  background-color: rgba(127, 29, 29, 0.2);
+  background-color: rgba(127, 29, 29, 0.15);
   border-left: 3px solid #ef4444;
 }
 .event-entry.attack {
@@ -282,7 +323,7 @@ input:checked + .toggle-track .toggle-thumb {
   background-color: #fffdf5;
 }
 .dark .event-entry.attack {
-  background-color: rgba(120, 53, 15, 0.2);
+  background-color: rgba(120, 53, 15, 0.15);
   border-left: 3px solid #f59e0b;
 }
 .event-entry.allowed {
@@ -298,21 +339,25 @@ input:checked + .toggle-track .toggle-thumb {
 }
 .event-time {
   font-size: 0.6875rem;
-  color: #6b7280;
+  font-family: 'JetBrains Mono', monospace;
+  color: #64748b;
 }
 .dark .event-time {
-  color: #9ca3af;
+  color: #94a3b8;
 }
 .event-msg {
   font-size: 0.75rem;
-  line-height: 1.15;
-  color: #111827;
+  line-height: 1.25;
+  color: #0f172a;
 }
 .dark .event-msg {
-  color: #f9fafb;
+  color: #f8fafc;
 }
 
 /* Stepper Items */
+.step-item {
+  transition: all 0.2s ease;
+}
 .step-item.active {
   border-color: #ef4444 !important;
   background-color: #fef2f2 !important;
@@ -321,7 +366,7 @@ input:checked + .toggle-track .toggle-thumb {
 }
 .dark .step-item.active {
   border-color: #b91c1c !important;
-  background-color: rgba(127, 29, 29, 0.3) !important;
+  background-color: rgba(127, 29, 29, 0.25) !important;
   color: #fca5a5 !important;
 }
 .step-item.active > div:first-child {
@@ -329,7 +374,7 @@ input:checked + .toggle-track .toggle-thumb {
   color: #ffffff !important;
 }
 
-/* pH Band Colors */
+/* pH Numeric Colors */
 .ph-safe {
   color: #059669 !important;
 }

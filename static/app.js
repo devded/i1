@@ -8,6 +8,8 @@
 let phChart = null;
 let sensorChart = null;
 let doseChart = null;
+let currentSensorYMax = 250;
+let currentDoseYMax = 250;
 
 // Telemetry State Tracking for Deltas
 let previousTelemetry = {
@@ -141,7 +143,7 @@ function initCharts() {
         show: true,
         strokeDashArray: 4,
         borderColor: gridColor,
-        padding: { left: 10, right: 10, top: -10, bottom: 0 }
+        padding: { left: 14, right: 36, top: 18, bottom: 8 }
       },
       colors: ["#0284c7"],
       series: [
@@ -160,7 +162,7 @@ function initCharts() {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+            cssClass: "text-[10px] font-medium fill-slate-500 dark:fill-zinc-400"
           }
         },
         axisBorder: { show: false },
@@ -169,13 +171,13 @@ function initCharts() {
       },
       yaxis: {
         min: 6.0,
-        max: 13.5,
-        tickAmount: 5,
+        max: 14.0,
+        tickAmount: 4,
         labels: {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+            cssClass: "text-[10px] font-medium fill-slate-500 dark:fill-zinc-400"
           },
           formatter: (val) => (val !== undefined && val !== null ? val.toFixed(1) : "")
         }
@@ -278,13 +280,13 @@ function initCharts() {
       },
       yaxis: {
         min: 0,
-        max: 12000,
+        max: 250,
         tickAmount: 4,
         labels: {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+            cssClass: "text-[10px] font-medium fill-slate-500 dark:fill-zinc-400"
           },
           formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
         }
@@ -293,7 +295,7 @@ function initCharts() {
         show: true,
         strokeDashArray: 4,
         borderColor: gridColor,
-        padding: { left: 10, right: 10, top: -10, bottom: 0 }
+        padding: { left: 14, right: 20, top: 16, bottom: 8 }
       },
       legend: {
         show: true,
@@ -367,13 +369,13 @@ function initCharts() {
       },
       yaxis: {
         min: 0,
-        max: 12000,
+        max: 250,
         tickAmount: 4,
         labels: {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+            cssClass: "text-[10px] font-medium fill-slate-500 dark:fill-zinc-400"
           },
           formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
         }
@@ -382,7 +384,7 @@ function initCharts() {
         show: true,
         strokeDashArray: 4,
         borderColor: gridColor,
-        padding: { left: 10, right: 10, top: -10, bottom: 0 }
+        padding: { left: 14, right: 36, top: 16, bottom: 8 }
       },
       legend: {
         show: false
@@ -708,6 +710,10 @@ function renderState(state) {
   }
 
   if (sensorChart) {
+    const maxPrimary = Math.max(...(history.primary || [100]), 0);
+    const maxVerif = Math.max(...(history.verification || [100]), 0);
+    const targetSensorMax = (maxPrimary > 250 || maxVerif > 250) ? 12000 : 250;
+
     sensorChart.updateSeries(
       [
         { name: "Primary Sensor (Attack Surface)", data: history.primary },
@@ -715,10 +721,28 @@ function renderState(state) {
       ],
       false
     );
-    sensorChart.updateOptions({ xaxis: { categories: labels, tickAmount: 4 } }, false, false);
+
+    const sOpts = { xaxis: { categories: labels, tickAmount: 4 } };
+    if (targetSensorMax !== currentSensorYMax) {
+      currentSensorYMax = targetSensorMax;
+      sOpts.yaxis = {
+        min: 0,
+        max: currentSensorYMax,
+        tickAmount: 4,
+        labels: {
+          style: { fontFamily: "'Inter', sans-serif", fontSize: "10px" },
+          formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
+        }
+      };
+    }
+    sensorChart.updateOptions(sOpts, false, false);
   }
 
   if (doseChart) {
+    const maxReq = Math.max(...(history.requested_dose || [100]), 0);
+    const maxAct = Math.max(...(history.actual_dose || [100]), 0);
+    const targetDoseMax = (maxReq > 250 || maxAct > 250) ? 12000 : 250;
+
     doseChart.updateSeries(
       [
         { name: "Requested Dose (SCADA Command)", data: history.requested_dose },
@@ -726,7 +750,21 @@ function renderState(state) {
       ],
       false
     );
-    doseChart.updateOptions({ xaxis: { categories: labels, tickAmount: 4 } }, false, false);
+
+    const dOpts = { xaxis: { categories: labels, tickAmount: 4 } };
+    if (targetDoseMax !== currentDoseYMax) {
+      currentDoseYMax = targetDoseMax;
+      dOpts.yaxis = {
+        min: 0,
+        max: currentDoseYMax,
+        tickAmount: 4,
+        labels: {
+          style: { fontFamily: "'Inter', sans-serif", fontSize: "10px" },
+          formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
+        }
+      };
+    }
+    doseChart.updateOptions(dOpts, false, false);
   }
 
   // 4. Update Cyber-Physical Pipeline & Defense Schematic
@@ -1111,22 +1149,22 @@ function renderAuditTable() {
     .reverse()
     .map(
       (r) => `
-    <tr class="hover:bg-gray-50 dark:hover:bg-gray-750 transition">
-      <td class="px-3 py-2 font-mono text-gray-500 dark:text-gray-400">${r.iso_time.split(" ")[1] || r.iso_time}</td>
-      <td class="px-3 py-2 font-mono font-bold text-gray-900 dark:text-white">${r.run_id.slice(-6)}</td>
+    <tr class="hover:bg-slate-50/80 dark:hover:bg-zinc-800/60 transition">
+      <td class="px-3 py-2 font-mono text-slate-500 dark:text-zinc-400">${r.iso_time.split(" ")[1] || r.iso_time}</td>
+      <td class="px-3 py-2 font-mono font-bold text-slate-900 dark:text-white">${r.run_id.slice(-6)}</td>
       <td class="px-3 py-2">
-        <span class="badge ${r.decision === "BLOCKED" ? "badge-destructive" : "badge-outline"}">
+        <span class="badge ${r.decision === "BLOCKED" ? "badge-destructive" : "badge-outline"} font-mono">
           ${r.decision}
         </span>
       </td>
       <td class="px-3 py-2 font-mono font-bold text-red-600 dark:text-red-400">${r.requested_dose.toFixed(1)}</td>
       <td class="px-3 py-2 font-mono font-bold text-sky-600 dark:text-sky-400">${r.actual_dose.toFixed(1)}</td>
-      <td class="px-3 py-2 font-mono text-gray-700 dark:text-gray-300">${r.resulting_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-slate-700 dark:text-zinc-300">${r.resulting_ppm.toFixed(1)}</td>
       <td class="px-3 py-2 font-mono font-bold ${r.ph > 10 ? "ph-danger" : r.ph > 8.5 ? "ph-elevated" : "ph-safe"}">${r.ph.toFixed(2)}</td>
-      <td class="px-3 py-2 font-mono text-gray-700 dark:text-gray-300">${r.primary_ppm.toFixed(1)}</td>
-      <td class="px-3 py-2 font-mono text-gray-700 dark:text-gray-300">${r.verification_ppm.toFixed(1)}</td>
-      <td class="px-3 py-2 font-mono text-gray-700 dark:text-gray-300">${r.flow.toFixed(1)}</td>
-      <td class="px-3 py-2 text-[11px] text-gray-500 dark:text-gray-400 max-w-[240px] truncate" title="${escapeHtml(r.reason)}">
+      <td class="px-3 py-2 font-mono text-slate-600 dark:text-zinc-400">${r.primary_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-slate-600 dark:text-zinc-400">${r.verification_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-slate-600 dark:text-zinc-400">${r.flow.toFixed(1)}</td>
+      <td class="px-3 py-2 text-[11px] text-slate-500 dark:text-zinc-400 max-w-[240px] truncate" title="${escapeHtml(r.reason)}">
         ${escapeHtml(r.reason)}
       </td>
     </tr>
