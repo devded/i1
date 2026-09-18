@@ -141,9 +141,18 @@ function updateChartTheme(theme) {
       grid: { borderColor: gridColor },
       colors: [primaryColor, midColor],
       tooltip: { theme: themeMode },
-      legend: {
+      legend: { show: false },
+      yaxis: {
+        min: 0,
+        max: currentSensorYMax,
+        tickAmount: 2,
         labels: {
-          colors: isDark ? "#c0c0c0" : "#404040"
+          style: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10px",
+            cssClass: "text-[10px] font-mono fill-[#808080]"
+          },
+          formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
         }
       }
     },
@@ -157,6 +166,19 @@ function updateChartTheme(theme) {
       grid: { borderColor: gridColor },
       colors: [midColor, primaryColor],
       tooltip: { theme: themeMode },
+      yaxis: {
+        min: 0,
+        max: currentDoseYMax,
+        tickAmount: 2,
+        labels: {
+          style: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10px",
+            cssClass: "text-[10px] font-mono fill-[#808080]"
+          },
+          formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
+        }
+      },
       annotations: {
         yaxis: [
           {
@@ -371,7 +393,7 @@ function initCharts() {
       yaxis: {
         min: 0,
         max: 250,
-        tickAmount: 4,
+        tickAmount: 2,
         labels: {
           style: {
             fontFamily: "'Inter', sans-serif",
@@ -385,18 +407,10 @@ function initCharts() {
         show: true,
         strokeDashArray: 4,
         borderColor: gridColor,
-        padding: { left: 14, right: 20, top: 16, bottom: 8 }
+        padding: { left: 14, right: 20, top: 10, bottom: 6 }
       },
       legend: {
-        show: true,
-        position: "top",
-        horizontalAlign: "right",
-        fontSize: "10px",
-        fontFamily: "'Inter', sans-serif",
-        labels: {
-          colors: isDark ? "#c0c0c0" : "#404040"
-        },
-        markers: { radius: 2 }
+        show: false
       }
     };
     sensorChart = new ApexCharts(sensorContainer, sensorOptions);
@@ -460,7 +474,7 @@ function initCharts() {
       yaxis: {
         min: 0,
         max: 250,
-        tickAmount: 4,
+        tickAmount: 2,
         labels: {
           style: {
             fontFamily: "'Inter', sans-serif",
@@ -474,7 +488,7 @@ function initCharts() {
         show: true,
         strokeDashArray: 4,
         borderColor: gridColor,
-        padding: { left: 14, right: 36, top: 16, bottom: 8 }
+        padding: { left: 14, right: 36, top: 10, bottom: 6 }
       },
       legend: {
         show: false
@@ -814,7 +828,7 @@ function renderState(state) {
           yaxis: {
             min: 0,
             max: currentSensorYMax,
-            tickAmount: 4,
+            tickAmount: 2,
             labels: {
               formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
             }
@@ -845,7 +859,7 @@ function renderState(state) {
           yaxis: {
             min: 0,
             max: currentDoseYMax,
-            tickAmount: 4,
+            tickAmount: 2,
             labels: {
               formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
             }

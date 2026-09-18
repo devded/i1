@@ -419,16 +419,22 @@
         </div>
 
         <!-- LOWER 3-COLUMN SPLIT: SENSORS + GHOST LINE + EVENT LOG -->
-        <div class="grid grid-cols-3 gap-3 flex-1 min-h-[200px]">
+        <div class="grid grid-cols-3 gap-3 flex-1 min-h-[220px]">
           
           <!-- Flowbite Chart 2: Dual Sensor Channels -->
           <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 shadow-xs flex flex-col min-h-0">
-            <div class="flex items-center justify-between mb-2 sm:mb-2.5">
-              <div class="flex items-center gap-1.5">
+            <div class="flex items-center justify-between mb-2 sm:mb-2.5 gap-2">
+              <div class="flex items-center gap-1.5 flex-shrink-0">
                 <i data-lucide="radio" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff]"></i>
-                <h4 class="text-xs font-bold text-[#000000] dark:text-[#ffffff]">Dual Sensor Channels</h4>
+                <h4 class="text-xs font-bold text-[#000000] dark:text-[#ffffff] whitespace-nowrap">Dual Sensors</h4>
               </div>
-              <span id="divergence-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]">DIV: 0.0%</span>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <div class="flex items-center gap-1.5 text-[10px] font-mono font-semibold whitespace-nowrap">
+                  <span class="text-[#000000] dark:text-[#ffffff]">── Prim</span>
+                  <span class="text-[#808080]">- - Verif</span>
+                </div>
+                <span id="divergence-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff] whitespace-nowrap">DIV: 0.0%</span>
+              </div>
             </div>
             <div class="chart-canvas-wrapper flex-1 min-h-0 relative w-full overflow-hidden">
               <div id="sensor-chart-container" class="w-full h-full"></div>
@@ -437,12 +443,12 @@
 
           <!-- Flowbite Chart 3: Actuator Dose (The Ghost Line) -->
           <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 shadow-xs flex flex-col min-h-0">
-            <div class="flex items-center justify-between mb-2 sm:mb-2.5">
-              <div class="flex items-center gap-1.5">
+            <div class="flex items-center justify-between mb-2 sm:mb-2.5 gap-2">
+              <div class="flex items-center gap-1.5 flex-shrink-0">
                 <i data-lucide="git-commit" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff]"></i>
-                <h4 class="text-xs font-bold text-[#000000] dark:text-[#ffffff]">Pump Actuator (Req vs Act)</h4>
+                <h4 class="text-xs font-bold text-[#000000] dark:text-[#ffffff] whitespace-nowrap">Pump Actuator</h4>
               </div>
-              <div class="flex items-center gap-2 text-[10px] font-mono font-semibold">
+              <div class="flex items-center gap-2 text-[10px] font-mono font-semibold whitespace-nowrap flex-shrink-0">
                 <span class="text-[#808080]">- - Req</span>
                 <span class="text-[#000000] dark:text-[#ffffff]">── Act</span>
               </div>
