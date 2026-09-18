@@ -18,12 +18,127 @@
       theme: {
         extend: {
           colors: {
+            mono: {
+              white: '#ffffff',
+              light: '#c0c0c0',
+              mid: '#808080',
+              dark: '#404040',
+              black: '#000000'
+            },
+            // Complete monochrome override mapping
+            slate: {
+              50: '#ffffff',
+              100: '#ffffff',
+              200: '#c0c0c0',
+              300: '#c0c0c0',
+              400: '#808080',
+              500: '#808080',
+              600: '#404040',
+              700: '#404040',
+              800: '#404040',
+              900: '#000000',
+              950: '#000000'
+            },
+            zinc: {
+              50: '#ffffff',
+              100: '#ffffff',
+              200: '#c0c0c0',
+              300: '#c0c0c0',
+              400: '#808080',
+              500: '#808080',
+              600: '#404040',
+              700: '#404040',
+              800: '#404040',
+              900: '#000000',
+              950: '#000000'
+            },
+            gray: {
+              50: '#ffffff',
+              100: '#ffffff',
+              200: '#c0c0c0',
+              300: '#c0c0c0',
+              400: '#808080',
+              500: '#808080',
+              600: '#404040',
+              700: '#404040',
+              800: '#404040',
+              900: '#000000'
+            },
+            sky: {
+              50: '#ffffff',
+              100: '#c0c0c0',
+              200: '#c0c0c0',
+              300: '#808080',
+              400: '#808080',
+              500: '#404040',
+              600: '#000000',
+              700: '#000000',
+              800: '#000000'
+            },
+            blue: {
+              50: '#ffffff',
+              500: '#404040',
+              600: '#000000',
+              700: '#000000'
+            },
+            red: {
+              50: '#ffffff',
+              100: '#c0c0c0',
+              200: '#c0c0c0',
+              300: '#808080',
+              400: '#808080',
+              500: '#404040',
+              600: '#000000',
+              700: '#000000',
+              800: '#000000',
+              950: '#000000'
+            },
+            emerald: {
+              50: '#ffffff',
+              100: '#c0c0c0',
+              200: '#c0c0c0',
+              300: '#808080',
+              400: '#808080',
+              500: '#404040',
+              600: '#000000',
+              700: '#000000',
+              800: '#000000',
+              950: '#000000'
+            },
+            amber: {
+              50: '#ffffff',
+              100: '#c0c0c0',
+              200: '#c0c0c0',
+              300: '#808080',
+              400: '#808080',
+              500: '#404040',
+              600: '#000000',
+              700: '#000000',
+              800: '#000000',
+              950: '#000000'
+            },
+            rose: {
+              500: '#404040',
+              600: '#000000'
+            },
+            cyan: {
+              50: '#ffffff',
+              500: '#404040',
+              600: '#000000'
+            },
+            purple: {
+              50: '#ffffff',
+              100: '#c0c0c0',
+              500: '#404040',
+              600: '#000000',
+              950: '#000000'
+            },
             brand: {
-              50: '#f0f9ff',
-              100: '#e0f2fe',
-              500: '#0ea5e9',
-              600: '#0284c7',
-              700: '#0369a1',
+              50: '#ffffff',
+              100: '#c0c0c0',
+              500: '#808080',
+              600: '#404040',
+              700: '#000000'
             }
           },
           fontFamily: {
@@ -45,74 +160,74 @@
   <!-- Custom CSS extensions -->
   <link rel="stylesheet" href="/static/styles.css">
 </head>
-<body class="bg-slate-50/70 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 flex h-screen w-screen overflow-hidden antialiased font-sans select-none">
+<body class="bg-[#ffffff] text-[#000000] dark:bg-[#000000] dark:text-[#ffffff] flex h-screen w-screen overflow-hidden antialiased font-sans select-none">
 
   <div class="flex h-screen w-screen overflow-hidden">
     
-    <!-- LEFT SIDEBAR (Enterprise Industrial Navigation) -->
-    <aside class="w-64 min-w-[16rem] bg-white dark:bg-zinc-900 border-r border-slate-200/80 dark:border-zinc-800 flex flex-col justify-between p-3.5 z-20 transition-colors shadow-xs">
+    <!-- LEFT SIDEBAR (Monochrome Industrial Navigation) -->
+    <aside class="w-64 min-w-[16rem] bg-[#ffffff] dark:bg-[#000000] border-r border-[#c0c0c0] dark:border-[#404040] flex flex-col justify-between p-3.5 z-20 transition-colors shadow-xs">
       <div>
         <!-- Brand Header -->
-        <div class="flex items-center gap-3 px-1.5 pb-3.5 border-b border-slate-100 dark:border-zinc-800/80">
-          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white shadow-xs flex-shrink-0">
+        <div class="flex items-center gap-3 px-1.5 pb-3.5 border-b border-[#c0c0c0] dark:border-[#404040]">
+          <div class="w-9 h-9 rounded-lg bg-[#000000] dark:bg-[#ffffff] flex items-center justify-center text-[#ffffff] dark:text-[#000000] shadow-xs flex-shrink-0">
             <i data-lucide="shield-check" class="w-5 h-5"></i>
           </div>
           <div>
             <div class="flex items-center gap-1.5">
-              <div class="text-sm font-bold tracking-tight text-slate-900 dark:text-white leading-tight">OLDSMAR SCADA</div>
-              <span class="text-[9px] font-semibold font-mono px-1 py-0.2 rounded bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">SIS</span>
+              <div class="text-sm font-bold tracking-tight text-[#000000] dark:text-[#ffffff] leading-tight">OLDSMAR SCADA</div>
+              <span class="text-[9px] font-semibold font-mono px-1 py-0.2 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff] bg-[#ffffff] dark:bg-[#000000]">SIS</span>
             </div>
-            <div class="text-[11px] font-medium text-slate-500 dark:text-zinc-400">IEC 61511 Safety Interlock</div>
+            <div class="text-[11px] font-medium text-[#404040] dark:text-[#c0c0c0]">IEC 61511 Safety Interlock</div>
           </div>
         </div>
 
         <!-- Navigation Links -->
         <nav class="mt-4 flex flex-col gap-1">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500 px-2 py-1">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-[#808080] px-2 py-1">
             Operations & Defense
           </div>
           
-          <button class="nav-item active w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-600 dark:text-zinc-400 hover:bg-slate-100/70 dark:hover:bg-zinc-800/70 transition text-left" data-tab="overview">
-            <i data-lucide="layout-dashboard" class="w-4 h-4 text-sky-600 dark:text-sky-400"></i>
+          <button class="nav-item active w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="overview">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
             <span>Live Telemetry</span>
           </button>
 
-          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-600 dark:text-zinc-400 hover:bg-slate-100/70 dark:hover:bg-zinc-800/70 transition text-left" data-tab="attack-studio">
-            <i data-lucide="crosshair" class="w-4 h-4 text-red-500"></i>
+          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="attack-studio">
+            <i data-lucide="crosshair" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
             <span>Attack Studio</span>
-            <span class="ml-auto text-[9px] font-bold font-mono bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300 px-1.5 py-0.5 rounded">EXPLOITS</span>
+            <span class="ml-auto text-[9px] font-bold font-mono border border-[#000000] dark:border-[#ffffff] bg-[#000000] text-[#ffffff] dark:bg-[#ffffff] dark:text-[#000000] px-1.5 py-0.5 rounded">EXPLOITS</span>
           </button>
 
-          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-600 dark:text-zinc-400 hover:bg-slate-100/70 dark:hover:bg-zinc-800/70 transition text-left" data-tab="safety-gates">
-            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
+          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="safety-gates">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
             <span>Safety Interlock Gates</span>
           </button>
 
-          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-600 dark:text-zinc-400 hover:bg-slate-100/70 dark:hover:bg-zinc-800/70 transition text-left" data-tab="audit-trail">
-            <i data-lucide="database" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="audit-trail">
+            <i data-lucide="database" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
             <span>SQLite Audit Trail</span>
           </button>
         </nav>
       </div>
 
       <!-- Sidebar Footer (Plant Telemetry Card) -->
-      <div class="border-t border-slate-100 dark:border-zinc-800/80 pt-3 px-1 flex flex-col gap-2">
-        <div class="bg-slate-50 dark:bg-zinc-800/60 border border-slate-200/60 dark:border-zinc-700/60 rounded-lg p-2.5 flex flex-col gap-1.5">
+      <div class="border-t border-[#c0c0c0] dark:border-[#404040] pt-3 px-1 flex flex-col gap-2">
+        <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-lg p-2.5 flex flex-col gap-1.5">
           <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-600 dark:text-zinc-300 flex items-center gap-1.5 text-[11px] font-medium">
+            <span class="text-[#000000] dark:text-[#ffffff] flex items-center gap-1.5 text-[11px] font-medium">
               <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#808080] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#000000] dark:bg-[#ffffff]"></span>
               </span>
               Plant System
             </span>
-            <span id="sidebar-status-text" class="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 bg-white dark:bg-zinc-800">OPTIMAL</span>
+            <span id="sidebar-status-text" class="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff] bg-[#ffffff] dark:bg-[#000000]">OPTIMAL</span>
           </div>
-          <div class="text-[10px] text-slate-500 dark:text-zinc-400 flex items-center justify-between">
+          <div class="text-[10px] text-[#404040] dark:text-[#c0c0c0] flex items-center justify-between">
             <span>Target:</span>
-            <span class="text-slate-800 dark:text-zinc-200 font-semibold font-mono">NaOH (Caustic)</span>
+            <span class="text-[#000000] dark:text-[#ffffff] font-semibold font-mono">NaOH (Caustic)</span>
           </div>
-          <div class="text-[9px] text-slate-400 dark:text-zinc-500 font-mono">
+          <div class="text-[9px] text-[#808080] font-mono">
             SIL-3 Loop • 1.0 Hz Physical Tick
           </div>
         </div>
@@ -120,22 +235,22 @@
     </aside>
 
     <!-- MAIN WORKSPACE -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50/60 dark:bg-zinc-950">
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-[#ffffff] dark:bg-[#000000]">
       
       <!-- TOP HEADER BAR -->
-      <header class="h-14 min-h-[3.5rem] border-b border-slate-200/80 dark:border-zinc-800 flex items-center justify-between px-4 bg-white dark:bg-zinc-900 gap-3 z-10 shadow-xs">
+      <header class="h-14 min-h-[3.5rem] border-b border-[#c0c0c0] dark:border-[#404040] flex items-center justify-between px-4 bg-[#ffffff] dark:bg-[#000000] gap-3 z-10 shadow-xs">
         <!-- Breadcrumb -->
-        <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400 whitespace-nowrap flex-shrink-0">
-          <i data-lucide="droplet" class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400"></i>
-          <span class="hover:text-slate-700 dark:hover:text-zinc-200">Plant #4</span>
-          <span class="text-slate-300 dark:text-zinc-600">/</span>
-          <span class="hover:text-slate-700 dark:hover:text-zinc-200">Water Treatment</span>
-          <span class="text-slate-300 dark:text-zinc-600">/</span>
-          <span class="font-semibold text-slate-900 dark:text-white">Caustic Dosing SCADA</span>
+        <div class="flex items-center gap-1.5 text-xs text-[#404040] dark:text-[#c0c0c0] whitespace-nowrap flex-shrink-0">
+          <i data-lucide="droplet" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff]"></i>
+          <span class="hover:text-[#000000] dark:hover:text-[#ffffff]">Plant #4</span>
+          <span class="text-[#808080]">/</span>
+          <span class="hover:text-[#000000] dark:hover:text-[#ffffff]">Water Treatment</span>
+          <span class="text-[#808080]">/</span>
+          <span class="font-semibold text-[#000000] dark:text-[#ffffff]">Caustic Dosing SCADA</span>
         </div>
 
         <!-- SIS Physical Key Switch Toggle (IEC 61511 Instrument) -->
-        <div class="flex items-center gap-2.5 bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 px-3 py-1 rounded-lg shadow-xs flex-shrink-0" title="IEC 61511 Physical Key Switch Stand-In">
+        <div class="flex items-center gap-2.5 bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] px-3 py-1 rounded-lg shadow-xs flex-shrink-0" title="IEC 61511 Physical Key Switch Stand-In">
           <label class="flowbite-toggle">
             <input type="checkbox" id="interlock-toggle" checked aria-label="Toggle SIS Safety Interlock">
             <span class="toggle-track">
@@ -143,41 +258,41 @@
             </span>
           </label>
           <div class="flex flex-col">
-            <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-900 dark:text-white leading-tight">
-              <i data-lucide="key-round" class="w-3 h-3 text-amber-500"></i>
+            <div class="flex items-center gap-1.5 text-[11px] font-bold text-[#000000] dark:text-[#ffffff] leading-tight">
+              <i data-lucide="key-round" class="w-3 h-3 text-[#000000] dark:text-[#ffffff]"></i>
               <span>HARDWARE INTERLOCK</span>
-              <span id="interlock-badge" class="ml-1 text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300">ENGAGED</span>
+              <span id="interlock-badge" class="ml-1 text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border border-[#000000] dark:border-[#ffffff] bg-[#000000] text-[#ffffff] dark:bg-[#ffffff] dark:text-[#000000]">ENGAGED</span>
             </div>
-            <span class="text-[9px] text-slate-400 dark:text-zinc-500 font-mono">IEC 61511 Physical Key Stand-In</span>
+            <span class="text-[9px] text-[#808080] font-mono">IEC 61511 Physical Key Stand-In</span>
           </div>
         </div>
 
         <!-- Header Telemetry & Actions -->
         <div class="flex items-center gap-2 flex-shrink-0">
-          <!-- Real-Time Status Pill with pulsing LED -->
+          <!-- Real-Time Status Pill with LED -->
           <div id="status-pill" class="status-pill nominal">
             <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#808080] opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-[#000000] dark:bg-[#ffffff]"></span>
             </span>
             <span id="status-text">NOMINAL OPERATION</span>
           </div>
           
-          <div class="px-2 py-1 rounded-md text-[11px] font-mono font-medium bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300">
-            RUN: <span id="run-id-text" class="font-bold text-slate-900 dark:text-white">INIT</span>
+          <div class="px-2 py-1 rounded-md text-[11px] font-mono font-medium bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff]">
+            RUN: <span id="run-id-text" class="font-bold text-[#000000] dark:text-[#ffffff]">INIT</span>
           </div>
           
-          <div class="px-2 py-1 rounded-md text-[11px] font-mono font-medium bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300">
-            UPTIME: <span id="uptime-text" class="font-bold text-slate-900 dark:text-white">0.0s</span>
+          <div class="px-2 py-1 rounded-md text-[11px] font-mono font-medium bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff]">
+            UPTIME: <span id="uptime-text" class="font-bold text-[#000000] dark:text-[#ffffff]">0.0s</span>
           </div>
 
           <!-- Theme Switcher -->
-          <button id="btn-theme-toggle" class="p-1.5 rounded-lg border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-600 dark:text-zinc-300 transition shadow-xs" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
+          <button id="btn-theme-toggle" class="p-1.5 rounded-lg border border-[#c0c0c0] dark:border-[#404040] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition shadow-xs" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
             <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
           </button>
 
           <!-- Reset Button -->
-          <button id="btn-reset-top" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 transition shadow-xs" title="Reset Plant Simulation" aria-label="Reset Plant Simulation">
+          <button id="btn-reset-top" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg border border-[#c0c0c0] dark:border-[#404040] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition shadow-xs" title="Reset Plant Simulation" aria-label="Reset Plant Simulation">
             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
             <span>Reset</span>
           </button>
@@ -193,108 +308,108 @@
         <div class="grid grid-cols-5 gap-3 flex-shrink-0">
           
           <!-- Stat 1: pH -->
-          <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3 shadow-xs hover:border-sky-500/40 transition">
-            <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500">Finished Water pH</span>
-              <div class="w-6 h-6 rounded-md bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3 shadow-xs hover:border-[#808080] transition">
+            <div class="flex items-center justify-between text-xs font-semibold text-[#404040] dark:text-[#c0c0c0]">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-[#808080]">Finished Water pH</span>
+              <div class="w-6 h-6 rounded-md bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center">
                 <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i>
               </div>
             </div>
             <div class="flex items-baseline gap-1.5 my-1.5">
-              <span id="stat-ph" class="stat-value text-3xl font-extrabold tracking-tight text-emerald-600">7.60</span>
-              <span class="text-xs font-semibold font-mono text-slate-400">pH</span>
+              <span id="stat-ph" class="stat-value text-3xl font-extrabold tracking-tight text-[#000000] dark:text-[#ffffff]">7.60</span>
+              <span class="text-xs font-semibold font-mono text-[#808080]">pH</span>
             </div>
-            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-100 dark:border-zinc-800/80">
-              <span id="ph-band-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-emerald-200 text-emerald-700 dark:border-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40">SAFE BAND</span>
-              <span id="stat-ph-delta" class="mono text-[11px] text-slate-400">--</span>
+            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#c0c0c0] dark:border-[#404040]">
+              <span id="ph-band-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] text-[#000000] dark:text-[#ffffff] bg-[#ffffff] dark:bg-[#000000]">SAFE BAND</span>
+              <span id="stat-ph-delta" class="mono text-[11px] text-[#808080]">--</span>
             </div>
           </div>
 
           <!-- Stat 2: Feed Rate -->
-          <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3 shadow-xs hover:border-sky-500/40 transition">
-            <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500">NaOH Mass Feed</span>
-              <div class="w-6 h-6 rounded-md bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3 shadow-xs hover:border-[#808080] transition">
+            <div class="flex items-center justify-between text-xs font-semibold text-[#404040] dark:text-[#c0c0c0]">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-[#808080]">NaOH Mass Feed</span>
+              <div class="w-6 h-6 rounded-md bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center">
                 <i data-lucide="zap" class="w-3.5 h-3.5"></i>
               </div>
             </div>
             <div class="flex items-baseline gap-1.5 my-1.5">
-              <span id="stat-feed" class="stat-value text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">5000</span>
-              <span class="text-xs font-semibold font-mono text-slate-400">mg/s</span>
+              <span id="stat-feed" class="stat-value text-3xl font-extrabold tracking-tight text-[#000000] dark:text-[#ffffff]">5000</span>
+              <span class="text-xs font-semibold font-mono text-[#808080]">mg/s</span>
             </div>
-            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-100 dark:border-zinc-800/80">
-              <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400">ṁ = Dose × Flow</span>
-              <span id="stat-feed-delta" class="mono text-[11px] text-slate-400">--</span>
+            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#c0c0c0] dark:border-[#404040]">
+              <span class="text-[10px] font-mono text-[#404040] dark:text-[#c0c0c0]">ṁ = Dose × Flow</span>
+              <span id="stat-feed-delta" class="mono text-[11px] text-[#808080]">--</span>
             </div>
           </div>
 
           <!-- Stat 3: Resulting PPM -->
-          <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3 shadow-xs hover:border-sky-500/40 transition">
-            <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500">Resulting Finished</span>
-              <div class="w-6 h-6 rounded-md bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3 shadow-xs hover:border-[#808080] transition">
+            <div class="flex items-center justify-between text-xs font-semibold text-[#404040] dark:text-[#c0c0c0]">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-[#808080]">Resulting Finished</span>
+              <div class="w-6 h-6 rounded-md bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center">
                 <i data-lucide="layers" class="w-3.5 h-3.5"></i>
               </div>
             </div>
             <div class="flex items-baseline gap-1.5 my-1.5">
-              <span id="stat-resulting" class="stat-value text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">100.0</span>
-              <span class="text-xs font-semibold font-mono text-slate-400">ppm</span>
+              <span id="stat-resulting" class="stat-value text-3xl font-extrabold tracking-tight text-[#000000] dark:text-[#ffffff]">100.0</span>
+              <span class="text-xs font-semibold font-mono text-[#808080]">ppm</span>
             </div>
-            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-100 dark:border-zinc-800/80">
-              <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400">Ceiling: 150.0 ppm</span>
-              <span id="stat-resulting-delta" class="mono text-[11px] text-slate-400">--</span>
+            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#c0c0c0] dark:border-[#404040]">
+              <span class="text-[10px] font-mono text-[#404040] dark:text-[#c0c0c0]">Ceiling: 150.0 ppm</span>
+              <span id="stat-resulting-delta" class="mono text-[11px] text-[#808080]">--</span>
             </div>
           </div>
 
           <!-- Stat 4: Water Flow -->
-          <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3 shadow-xs hover:border-sky-500/40 transition">
-            <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500">Water Flow Intake</span>
-              <div class="w-6 h-6 rounded-md bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3 shadow-xs hover:border-[#808080] transition">
+            <div class="flex items-center justify-between text-xs font-semibold text-[#404040] dark:text-[#c0c0c0]">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-[#808080]">Water Flow Intake</span>
+              <div class="w-6 h-6 rounded-md bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center">
                 <i data-lucide="waves" class="w-3.5 h-3.5"></i>
               </div>
             </div>
             <div class="flex items-baseline gap-1.5 my-1.5">
-              <span id="stat-flow" class="stat-value text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">50.0</span>
-              <span class="text-xs font-semibold font-mono text-slate-400">L/s</span>
+              <span id="stat-flow" class="stat-value text-3xl font-extrabold tracking-tight text-[#000000] dark:text-[#ffffff]">50.0</span>
+              <span class="text-xs font-semibold font-mono text-[#808080]">L/s</span>
             </div>
-            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-100 dark:border-zinc-800/80">
-              <span class="text-[10px] font-mono text-slate-500 dark:text-zinc-400">Nominal ~50 L/s</span>
-              <span id="stat-flow-delta" class="mono text-[11px] text-slate-400">--</span>
+            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#c0c0c0] dark:border-[#404040]">
+              <span class="text-[10px] font-mono text-[#404040] dark:text-[#c0c0c0]">Nominal ~50 L/s</span>
+              <span id="stat-flow-delta" class="mono text-[11px] text-[#808080]">--</span>
             </div>
           </div>
 
           <!-- Stat 5: Active Dose -->
-          <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3 shadow-xs hover:border-sky-500/40 transition">
-            <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-zinc-400">
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-zinc-500">Actuator Pump Dose</span>
-              <div class="w-6 h-6 rounded-md bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3 shadow-xs hover:border-[#808080] transition">
+            <div class="flex items-center justify-between text-xs font-semibold text-[#404040] dark:text-[#c0c0c0]">
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-[#808080]">Actuator Pump Dose</span>
+              <div class="w-6 h-6 rounded-md bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center">
                 <i data-lucide="gauge" class="w-3.5 h-3.5"></i>
               </div>
             </div>
             <div class="flex items-baseline gap-1.5 my-1.5">
-              <span id="stat-dose" class="stat-value text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">100.0</span>
-              <span class="text-xs font-semibold font-mono text-slate-400">ppm</span>
+              <span id="stat-dose" class="stat-value text-3xl font-extrabold tracking-tight text-[#000000] dark:text-[#ffffff]">100.0</span>
+              <span class="text-xs font-semibold font-mono text-[#808080]">ppm</span>
             </div>
-            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-100 dark:border-zinc-800/80">
-              <span id="ghost-divergence-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">ALIGNED</span>
-              <span id="stat-dose-delta" class="mono text-[11px] text-slate-400">--</span>
+            <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#c0c0c0] dark:border-[#404040]">
+              <span id="ghost-divergence-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]">ALIGNED</span>
+              <span id="stat-dose-delta" class="mono text-[11px] text-[#808080]">--</span>
             </div>
           </div>
 
         </div>
 
         <!-- UPPER FLOWBITE APEXCHART: FINISHED WATER pH -->
-        <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col flex-1 min-h-[230px]">
+        <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 sm:p-5 shadow-xs flex flex-col flex-1 min-h-[230px]">
           <div class="flex items-center justify-between mb-3 sm:mb-4">
             <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-sky-600"></div>
-              <h3 class="text-xs font-bold text-slate-900 dark:text-white">Finished Water Acidity / Alkalinity (pH & Chemical Neutralization Curve)</h3>
+              <div class="w-2.5 h-2.5 rounded-full bg-[#000000] dark:bg-[#ffffff]"></div>
+              <h3 class="text-xs font-bold text-[#000000] dark:text-[#ffffff]">Finished Water Acidity / Alkalinity (pH & Chemical Neutralization Curve)</h3>
             </div>
             <div class="flex items-center gap-2 text-[11px] font-semibold">
-              <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 font-mono text-[10px]">■ Safe: 6.5–8.5</span>
-              <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 font-mono text-[10px]">■ Elevated: 8.5–10.0</span>
-              <span class="px-2 py-0.5 rounded bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200 dark:border-red-800/60 font-mono text-[10px]">■ Hazardous: &gt;10.0</span>
+              <span class="px-2 py-0.5 rounded bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff] border border-[#c0c0c0] dark:border-[#404040] font-mono text-[10px]">■ Safe: 6.5–8.5</span>
+              <span class="px-2 py-0.5 rounded bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff] border border-[#808080] font-mono text-[10px]">■ Elevated: 8.5–10.0</span>
+              <span class="px-2 py-0.5 rounded bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000] border border-[#000000] dark:border-[#ffffff] font-mono text-[10px]">■ Hazardous: &gt;10.0</span>
             </div>
           </div>
           <!-- ApexCharts Container -->
@@ -307,13 +422,13 @@
         <div class="grid grid-cols-3 gap-3 flex-1 min-h-[200px]">
           
           <!-- Flowbite Chart 2: Dual Sensor Channels -->
-          <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex flex-col min-h-0">
+          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 shadow-xs flex flex-col min-h-0">
             <div class="flex items-center justify-between mb-2 sm:mb-2.5">
               <div class="flex items-center gap-1.5">
-                <i data-lucide="radio" class="w-3.5 h-3.5 text-rose-500"></i>
-                <h4 class="text-xs font-bold text-slate-900 dark:text-white">Dual Sensor Channels</h4>
+                <i data-lucide="radio" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff]"></i>
+                <h4 class="text-xs font-bold text-[#000000] dark:text-[#ffffff]">Dual Sensor Channels</h4>
               </div>
-              <span id="divergence-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">DIV: 0.0%</span>
+              <span id="divergence-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]">DIV: 0.0%</span>
             </div>
             <div class="chart-canvas-wrapper flex-1 min-h-0 relative w-full overflow-hidden">
               <div id="sensor-chart-container" class="w-full h-full"></div>
@@ -321,15 +436,15 @@
           </div>
 
           <!-- Flowbite Chart 3: Actuator Dose (The Ghost Line) -->
-          <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex flex-col min-h-0">
+          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 shadow-xs flex flex-col min-h-0">
             <div class="flex items-center justify-between mb-2 sm:mb-2.5">
               <div class="flex items-center gap-1.5">
-                <i data-lucide="git-commit" class="w-3.5 h-3.5 text-sky-600"></i>
-                <h4 class="text-xs font-bold text-slate-900 dark:text-white">Pump Actuator (Req vs Act)</h4>
+                <i data-lucide="git-commit" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff]"></i>
+                <h4 class="text-xs font-bold text-[#000000] dark:text-[#ffffff]">Pump Actuator (Req vs Act)</h4>
               </div>
               <div class="flex items-center gap-2 text-[10px] font-mono font-semibold">
-                <span class="text-red-500">- - Req</span>
-                <span class="text-sky-600">── Act</span>
+                <span class="text-[#808080]">- - Req</span>
+                <span class="text-[#000000] dark:text-[#ffffff]">── Act</span>
               </div>
             </div>
             <div class="chart-canvas-wrapper flex-1 min-h-0 relative w-full overflow-hidden">
@@ -338,13 +453,13 @@
           </div>
 
           <!-- Live Event Log -->
-          <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex flex-col min-h-0">
+          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 shadow-xs flex flex-col min-h-0">
             <div class="flex items-center justify-between mb-2 sm:mb-2.5">
               <div class="flex items-center gap-1.5">
-                <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-500"></i>
-                <h4 class="text-xs font-bold text-slate-900 dark:text-white">Live Event Stream</h4>
+                <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff]"></i>
+                <h4 class="text-xs font-bold text-[#000000] dark:text-[#ffffff]">Live Event Stream</h4>
               </div>
-              <span id="event-count-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">0 EVENTS</span>
+              <span id="event-count-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]">0 EVENTS</span>
             </div>
             <div id="event-log" class="flex-1 overflow-y-auto flex flex-col gap-1.5 pr-1 text-xs">
               <!-- Dynamically populated -->
@@ -365,142 +480,142 @@
           <div class="col-span-7 flex flex-col gap-3 overflow-y-auto pr-1">
             
             <!-- SCENARIO 1: OLDSMAR SPIKE -->
-            <div class="attack-scenario-card bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3.5 shadow-xs hover:border-sky-500/40 transition" id="card-exploit-oldsmar">
+            <div class="attack-scenario-card bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3.5 shadow-xs hover:border-[#808080] transition" id="card-exploit-oldsmar">
               <div class="flex items-center justify-between mb-1.5">
-                <div class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
-                  <i data-lucide="skull" class="w-4 h-4 text-red-500"></i>
+                <div class="flex items-center gap-2 text-sm font-bold text-[#000000] dark:text-[#ffffff]">
+                  <i data-lucide="skull" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
                   <span>1. Oldsmar Remote SCADA Spike</span>
                 </div>
-                <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300">CRITICAL THREAT</span>
+                <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border border-[#000000] dark:border-[#ffffff] bg-[#000000] text-[#ffffff] dark:bg-[#ffffff] dark:text-[#000000]">CRITICAL THREAT</span>
               </div>
-              <p class="text-xs text-slate-600 dark:text-zinc-400 mb-2 leading-relaxed">
+              <p class="text-xs text-[#404040] dark:text-[#c0c0c0] mb-2 leading-relaxed">
                 Adversary compromises primary sensor telemetry and commands lethal 11,100 ppm caustic dosage, exactly replicating the February 2021 Oldsmar, Florida attack.
               </p>
-              <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-zinc-400 bg-slate-50 dark:bg-zinc-800/60 p-2 rounded-lg mb-2 border border-slate-100 dark:border-zinc-800">
-                <span>Vector: <b class="text-slate-800 dark:text-zinc-200">Sensor Spoofing</b></span>
+              <div class="flex items-center gap-3 text-[11px] text-[#404040] dark:text-[#c0c0c0] bg-[#ffffff] dark:bg-[#000000] p-2 rounded-lg mb-2 border border-[#c0c0c0] dark:border-[#404040]">
+                <span>Vector: <b class="text-[#000000] dark:text-[#ffffff]">Sensor Spoofing</b></span>
                 <span>•</span>
-                <span>Payload: <b class="text-slate-800 dark:text-zinc-200">100 → 11,100 ppm</b></span>
+                <span>Payload: <b class="text-[#000000] dark:text-[#ffffff]">100 → 11,100 ppm</b></span>
                 <span>•</span>
-                <span>Expected Trip: <b class="text-slate-800 dark:text-zinc-200">Gate 1 + Gate 3</b></span>
+                <span>Expected Trip: <b class="text-[#000000] dark:text-[#ffffff]">Gate 1 + Gate 3</b></span>
               </div>
-              <button class="launch-exploit-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white transition shadow-xs active:scale-[0.98]" data-variant="oldsmar_spike">
+              <button class="launch-exploit-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#000000] hover:bg-[#404040] dark:bg-[#ffffff] dark:hover:bg-[#c0c0c0] text-[#ffffff] dark:text-[#000000] transition shadow-xs active:scale-[0.98]" data-variant="oldsmar_spike">
                 <i data-lucide="play" class="w-3.5 h-3.5"></i>
                 <span>Launch Oldsmar Spike</span>
               </button>
             </div>
 
             <!-- SCENARIO 2: SINGLE-CHANNEL STEALTH -->
-            <div class="attack-scenario-card bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3.5 shadow-xs hover:border-sky-500/40 transition" id="card-exploit-stealth">
+            <div class="attack-scenario-card bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3.5 shadow-xs hover:border-[#808080] transition" id="card-exploit-stealth">
               <div class="flex items-center justify-between mb-1.5">
-                <div class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
-                  <i data-lucide="target" class="w-4 h-4 text-amber-500"></i>
+                <div class="flex items-center gap-2 text-sm font-bold text-[#000000] dark:text-[#ffffff]">
+                  <i data-lucide="target" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
                   <span>2. Single-Channel Stealth Spoof</span>
                 </div>
-                <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">STEALTH DRIFT</span>
+                <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border border-[#808080] bg-[#c0c0c0] text-[#000000] dark:bg-[#404040] dark:text-[#ffffff]">STEALTH DRIFT</span>
               </div>
-              <p class="text-xs text-slate-600 dark:text-zinc-400 mb-2 leading-relaxed">
+              <p class="text-xs text-[#404040] dark:text-[#c0c0c0] mb-2 leading-relaxed">
                 Adversary moderately raises primary channel to 135 ppm, staying strictly within slew rate (40 ppm/s) and hard ceiling (150 ppm). Proves why the independent second channel is indispensable.
               </p>
-              <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-zinc-400 bg-slate-50 dark:bg-zinc-800/60 p-2 rounded-lg mb-2 border border-slate-100 dark:border-zinc-800">
-                <span>Vector: <b class="text-slate-800 dark:text-zinc-200">Sub-Threshold</b></span>
+              <div class="flex items-center gap-3 text-[11px] text-[#404040] dark:text-[#c0c0c0] bg-[#ffffff] dark:bg-[#000000] p-2 rounded-lg mb-2 border border-[#c0c0c0] dark:border-[#404040]">
+                <span>Vector: <b class="text-[#000000] dark:text-[#ffffff]">Sub-Threshold</b></span>
                 <span>•</span>
-                <span>Payload: <b class="text-slate-800 dark:text-zinc-200">135.0 ppm</b></span>
+                <span>Payload: <b class="text-[#000000] dark:text-[#ffffff]">135.0 ppm</b></span>
                 <span>•</span>
-                <span>Expected Trip: <b class="text-slate-800 dark:text-zinc-200">Gate 3 (Disagreement)</b></span>
+                <span>Expected Trip: <b class="text-[#000000] dark:text-[#ffffff]">Gate 3 (Disagreement)</b></span>
               </div>
-              <button class="launch-exploit-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white transition shadow-xs active:scale-[0.98]" data-variant="single_channel_stealth">
+              <button class="launch-exploit-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#000000] hover:bg-[#404040] dark:bg-[#ffffff] dark:hover:bg-[#c0c0c0] text-[#ffffff] dark:text-[#000000] transition shadow-xs active:scale-[0.98]" data-variant="single_channel_stealth">
                 <i data-lucide="play" class="w-3.5 h-3.5"></i>
                 <span>Launch Stealth Drift</span>
               </button>
             </div>
 
             <!-- SCENARIO 3: SLOW RAMP DUAL COMPROMISE -->
-            <div class="attack-scenario-card bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3.5 shadow-xs hover:border-sky-500/40 transition" id="card-exploit-ramp">
+            <div class="attack-scenario-card bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3.5 shadow-xs hover:border-[#808080] transition" id="card-exploit-ramp">
               <div class="flex items-center justify-between mb-1.5">
-                <div class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
-                  <i data-lucide="trending-up" class="w-4 h-4 text-purple-500"></i>
+                <div class="flex items-center gap-2 text-sm font-bold text-[#000000] dark:text-[#ffffff]">
+                  <i data-lucide="trending-up" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
                   <span>3. Slow Ramp Dual-Compromise (APT)</span>
                 </div>
-                <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300">ADVANCED APT</span>
+                <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border border-[#000000] dark:border-[#ffffff] bg-[#000000] text-[#ffffff] dark:bg-[#ffffff] dark:text-[#000000]">ADVANCED APT</span>
               </div>
-              <p class="text-xs text-slate-600 dark:text-zinc-400 mb-2 leading-relaxed">
+              <p class="text-xs text-[#404040] dark:text-[#c0c0c0] mb-2 leading-relaxed">
                 Sophisticated adversary compromises BOTH Primary and Verification sensors simultaneously, creeping them up at +35 ppm/s. Bypasses cross-check and slew rate; caught solely by physical hard ceiling.
               </p>
-              <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-zinc-400 bg-slate-50 dark:bg-zinc-800/60 p-2 rounded-lg mb-2 border border-slate-100 dark:border-zinc-800">
-                <span>Vector: <b class="text-slate-800 dark:text-zinc-200">Dual-Channel Sync</b></span>
+              <div class="flex items-center gap-3 text-[11px] text-[#404040] dark:text-[#c0c0c0] bg-[#ffffff] dark:bg-[#000000] p-2 rounded-lg mb-2 border border-[#c0c0c0] dark:border-[#404040]">
+                <span>Vector: <b class="text-[#000000] dark:text-[#ffffff]">Dual-Channel Sync</b></span>
                 <span>•</span>
-                <span>Payload: <b class="text-slate-800 dark:text-zinc-200">+35 ppm/s continuous</b></span>
+                <span>Payload: <b class="text-[#000000] dark:text-[#ffffff]">+35 ppm/s continuous</b></span>
                 <span>•</span>
-                <span>Expected Trip: <b class="text-slate-800 dark:text-zinc-200">Gate 1 Ceiling</b></span>
+                <span>Expected Trip: <b class="text-[#000000] dark:text-[#ffffff]">Gate 1 Ceiling</b></span>
               </div>
-              <button class="launch-exploit-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white transition shadow-xs active:scale-[0.98]" data-variant="slow_ramp">
+              <button class="launch-exploit-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#000000] hover:bg-[#404040] dark:bg-[#ffffff] dark:hover:bg-[#c0c0c0] text-[#ffffff] dark:text-[#000000] transition shadow-xs active:scale-[0.98]" data-variant="slow_ramp">
                 <i data-lucide="play" class="w-3.5 h-3.5"></i>
                 <span>Launch Dual Ramp</span>
               </button>
             </div>
 
             <!-- SCENARIO 4: FLOW FALSIFICATION -->
-            <div class="attack-scenario-card bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3.5 shadow-xs hover:border-sky-500/40 transition" id="card-exploit-flow">
+            <div class="attack-scenario-card bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3.5 shadow-xs hover:border-[#808080] transition" id="card-exploit-flow">
               <div class="flex items-center justify-between mb-1.5">
-                <div class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
-                  <i data-lucide="droplet" class="w-4 h-4 text-cyan-500"></i>
+                <div class="flex items-center gap-2 text-sm font-bold text-[#000000] dark:text-[#ffffff]">
+                  <i data-lucide="droplet" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
                   <span>4. Flow Sensor Falsification</span>
                 </div>
-                <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 dark:bg-cyan-950/60 dark:text-cyan-300">HYDRAULIC SPOOF</span>
+                <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full border border-[#808080] bg-[#c0c0c0] text-[#000000] dark:bg-[#404040] dark:text-[#ffffff]">HYDRAULIC SPOOF</span>
               </div>
-              <p class="text-xs text-slate-600 dark:text-zinc-400 mb-2 leading-relaxed">
+              <p class="text-xs text-[#404040] dark:text-[#c0c0c0] mb-2 leading-relaxed">
                 Adversary leaves chemical sensors untouched and reports intake flow down to 15 L/s, forcing the controller into massive mass overdosing per litre. Caught because the interlock checks physical resulting ppm.
               </p>
-              <div class="flex items-center gap-3 text-[11px] text-slate-500 dark:text-zinc-400 bg-slate-50 dark:bg-zinc-800/60 p-2 rounded-lg mb-2 border border-slate-100 dark:border-zinc-800">
-                <span>Vector: <b class="text-slate-800 dark:text-zinc-200">Flow Telemetry Spoof</b></span>
+              <div class="flex items-center gap-3 text-[11px] text-[#404040] dark:text-[#c0c0c0] bg-[#ffffff] dark:bg-[#000000] p-2 rounded-lg mb-2 border border-[#c0c0c0] dark:border-[#404040]">
+                <span>Vector: <b class="text-[#000000] dark:text-[#ffffff]">Flow Telemetry Spoof</b></span>
                 <span>•</span>
-                <span>Payload: <b class="text-slate-800 dark:text-zinc-200">Reported 15 L/s (vs 50 L/s)</b></span>
+                <span>Payload: <b class="text-[#000000] dark:text-[#ffffff]">Reported 15 L/s (vs 50 L/s)</b></span>
                 <span>•</span>
-                <span>Expected Trip: <b class="text-slate-800 dark:text-zinc-200">Gate 1 Resulting PPM</b></span>
+                <span>Expected Trip: <b class="text-[#000000] dark:text-[#ffffff]">Gate 1 Resulting PPM</b></span>
               </div>
-              <button class="launch-exploit-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white transition shadow-xs active:scale-[0.98]" data-variant="flow_falsification">
+              <button class="launch-exploit-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#000000] hover:bg-[#404040] dark:bg-[#ffffff] dark:hover:bg-[#c0c0c0] text-[#ffffff] dark:text-[#000000] transition shadow-xs active:scale-[0.98]" data-variant="flow_falsification">
                 <i data-lucide="play" class="w-3.5 h-3.5"></i>
                 <span>Launch Flow Spoof</span>
               </button>
             </div>
 
             <!-- CUSTOM EXPLOIT PLAYGROUND -->
-            <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3.5 shadow-xs">
-              <div class="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white mb-2">
-                <i data-lucide="sliders" class="w-4 h-4 text-sky-600"></i>
+            <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3.5 shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#000000] dark:text-[#ffffff] mb-2">
+                <i data-lucide="sliders" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
                 <span>Judge Exploit Playground (Custom Live Parameter Injection)</span>
               </div>
               
               <!-- Slider 1: Primary PPM -->
               <div class="mb-3">
-                <div class="flex justify-between text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
+                <div class="flex justify-between text-xs font-semibold text-[#404040] dark:text-[#c0c0c0] mb-1">
                   <span>Primary NaOH Sensor Injection</span>
-                  <span id="slider-primary-val" class="mono font-bold text-sky-600">100.0 ppm</span>
+                  <span id="slider-primary-val" class="mono font-bold text-[#000000] dark:text-[#ffffff]">100.0 ppm</span>
                 </div>
                 <input type="range" id="custom-primary-range" class="styled-range" min="0" max="12000" step="10" value="100" aria-label="Primary NaOH Sensor Injection Range">
                 <div class="flex gap-1.5 mt-2 flex-wrap">
-                  <button class="quick-preset text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 transition" data-val="100">100 ppm (Nominal)</button>
-                  <button class="quick-preset text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 transition" data-val="135">135 ppm (Stealth)</button>
-                  <button class="quick-preset text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 transition" data-val="300">300 ppm (Elevated)</button>
-                  <button class="quick-preset text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 transition" data-val="11100">11,100 ppm (Oldsmar)</button>
+                  <button class="quick-preset text-[11px] font-mono px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] bg-[#ffffff] dark:bg-[#000000] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition" data-val="100">100 ppm (Nominal)</button>
+                  <button class="quick-preset text-[11px] font-mono px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] bg-[#ffffff] dark:bg-[#000000] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition" data-val="135">135 ppm (Stealth)</button>
+                  <button class="quick-preset text-[11px] font-mono px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] bg-[#ffffff] dark:bg-[#000000] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition" data-val="300">300 ppm (Elevated)</button>
+                  <button class="quick-preset text-[11px] font-mono px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] bg-[#ffffff] dark:bg-[#000000] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition" data-val="11100">11,100 ppm (Oldsmar)</button>
                 </div>
               </div>
 
               <!-- Slider 2: Flow L/s -->
               <div class="mb-3">
-                <div class="flex justify-between text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1">
+                <div class="flex justify-between text-xs font-semibold text-[#404040] dark:text-[#c0c0c0] mb-1">
                   <span>Reported Water Flow Rate Injection</span>
-                  <span id="slider-flow-val" class="mono font-bold text-cyan-600">50.0 L/s</span>
+                  <span id="slider-flow-val" class="mono font-bold text-[#000000] dark:text-[#ffffff]">50.0 L/s</span>
                 </div>
                 <input type="range" id="custom-flow-range" class="styled-range" min="5" max="80" step="1" value="50" aria-label="Reported Water Flow Rate Range">
               </div>
 
               <div class="flex gap-2 mt-3">
-                <button id="btn-fire-custom" class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-600 hover:bg-red-700 text-white transition shadow-xs active:scale-[0.98]">
+                <button id="btn-fire-custom" class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#000000] hover:bg-[#404040] dark:bg-[#ffffff] dark:hover:bg-[#c0c0c0] text-[#ffffff] dark:text-[#000000] transition shadow-xs active:scale-[0.98]">
                   <i data-lucide="flame" class="w-3.5 h-3.5"></i>
                   <span>Execute Custom Injection</span>
                 </button>
-                <button id="btn-stop-all" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 transition">
+                <button id="btn-stop-all" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-[#c0c0c0] dark:border-[#404040] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition">
                   <i data-lucide="square" class="w-3.5 h-3.5"></i>
                   <span>Stop / Restore Nominal</span>
                 </button>
@@ -510,112 +625,98 @@
           </div>
 
           <!-- RIGHT COLUMN: ANIMATED SCADA TOPOLOGY & STEPPER (5 COLS) -->
-          <div class="col-span-5 bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-3.5 shadow-xs flex flex-col justify-between">
+          <div class="col-span-5 bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-3.5 shadow-xs flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
-                  <i data-lucide="cpu" class="w-4 h-4 text-sky-600"></i>
+                <div class="flex items-center gap-2 text-xs font-bold text-[#000000] dark:text-[#ffffff]">
+                  <i data-lucide="cpu" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
                   <span>Cyber-Physical Process Topology & Defense Shield</span>
                 </div>
-                <span id="pipeline-status-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300">SHIELD ACTIVE</span>
+                <span id="pipeline-status-badge" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]">SHIELD ACTIVE</span>
               </div>
 
-              <!-- SVG Animated Schematic -->
-              <svg class="scada-pipeline-svg rounded-lg bg-slate-50/80 dark:bg-zinc-950/80 border border-slate-200/80 dark:border-zinc-800 p-2 my-2" viewBox="0 0 520 280">
+              <!-- SVG Animated Schematic (Pure Monochrome) -->
+              <svg class="scada-pipeline-svg rounded-lg bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] p-2 my-2" viewBox="0 0 520 280">
                 <defs>
                   <linearGradient id="pipeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#0284c7" stop-opacity="0.25"/>
-                    <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.6"/>
+                    <stop offset="0%" stop-color="#808080" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#c0c0c0" stop-opacity="0.6"/>
                   </linearGradient>
-                  <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="4" result="blur"/>
-                    <feMerge>
-                      <feMergeNode in="blur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
-                  <filter id="glowRed" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="6" result="blur"/>
-                    <feMerge>
-                      <feMergeNode in="blur"/>
-                      <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                  </filter>
                 </defs>
 
                 <!-- Water Pipe Background -->
                 <path d="M 20 180 L 140 180 L 260 180 L 380 180 L 500 180" stroke="url(#pipeGrad)" stroke-width="18" fill="none" stroke-linecap="round"/>
 
                 <!-- Flow particles -->
-                <circle cx="60" cy="180" r="3" fill="#0284c7"><animate attributeName="cx" values="20;500" dur="3s" repeatCount="indefinite"/></circle>
-                <circle cx="180" cy="180" r="3" fill="#0284c7"><animate attributeName="cx" values="20;500" dur="3s" begin="1s" repeatCount="indefinite"/></circle>
-                <circle cx="300" cy="180" r="3" fill="#0284c7"><animate attributeName="cx" values="20;500" dur="3s" begin="2s" repeatCount="indefinite"/></circle>
+                <circle cx="60" cy="180" r="3" fill="#808080"><animate attributeName="cx" values="20;500" dur="3s" repeatCount="indefinite"/></circle>
+                <circle cx="180" cy="180" r="3" fill="#808080"><animate attributeName="cx" values="20;500" dur="3s" begin="1s" repeatCount="indefinite"/></circle>
+                <circle cx="300" cy="180" r="3" fill="#808080"><animate attributeName="cx" values="20;500" dur="3s" begin="2s" repeatCount="indefinite"/></circle>
 
                 <!-- Raw Intake Node -->
                 <rect x="20" y="145" width="70" height="70" rx="8" stroke-width="1.5"/>
                 <text x="55" y="175" font-size="10" font-family="Inter" font-weight="700" text-anchor="middle">INTAKE</text>
-                <text x="55" y="195" fill="#64748b" font-size="9" font-family="JetBrains Mono" text-anchor="middle">~50 L/s</text>
+                <text x="55" y="195" fill="#808080" font-size="9" font-family="JetBrains Mono" text-anchor="middle">~50 L/s</text>
 
                 <!-- Sensor Chamber Node -->
-                <rect id="svg-node-sensor" x="130" y="140" width="85" height="80" rx="8" stroke="#0284c7" stroke-width="1.5"/>
+                <rect id="svg-node-sensor" x="130" y="140" width="85" height="80" rx="8" stroke="#808080" stroke-width="1.5"/>
                 <text x="172" y="165" font-size="9" font-family="Inter" font-weight="700" text-anchor="middle">SENSORS</text>
-                <text id="svg-text-primary" x="172" y="185" fill="#ef4444" font-size="8.5" font-family="JetBrains Mono" text-anchor="middle">P: 100 ppm</text>
-                <text id="svg-text-verif" x="172" y="202" fill="#10b981" font-size="8.5" font-family="JetBrains Mono" text-anchor="middle">V: 100 ppm</text>
+                <text id="svg-text-primary" x="172" y="185" fill="#000000" font-size="8.5" font-family="JetBrains Mono" font-weight="700" text-anchor="middle">P: 100 ppm</text>
+                <text id="svg-text-verif" x="172" y="202" fill="#808080" font-size="8.5" font-family="JetBrains Mono" text-anchor="middle">V: 100 ppm</text>
 
                 <!-- Attacker Ingress Beam -->
-                <path id="svg-attack-beam" d="M 172 30 L 172 135" stroke="#ef4444" stroke-width="3" stroke-dasharray="4 3" fill="none" opacity="0"/>
-                <text id="svg-attack-label" x="172" y="22" fill="#ef4444" font-size="9" font-family="Inter" font-weight="700" text-anchor="middle" opacity="0">ATTACKER INJECTION</text>
+                <path id="svg-attack-beam" d="M 172 30 L 172 135" stroke="#000000" stroke-width="3" stroke-dasharray="4 3" fill="none" opacity="0"/>
+                <text id="svg-attack-label" x="172" y="22" fill="#000000" font-size="9" font-family="Inter" font-weight="700" text-anchor="middle" opacity="0">ATTACKER INJECTION</text>
 
                 <!-- Signal line to SCADA -->
-                <path d="M 172 140 L 172 80 L 280 80" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+                <path d="M 172 140 L 172 80 L 280 80" stroke="#808080" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
 
                 <!-- SCADA Controller Node -->
                 <rect x="280" y="55" width="85" height="50" rx="8" stroke-width="1.5"/>
                 <text x="322" y="75" font-size="9" font-family="Inter" font-weight="700" text-anchor="middle">SCADA PLC</text>
-                <text id="svg-req-dose" x="322" y="93" fill="#0284c7" font-size="8.5" font-family="JetBrains Mono" text-anchor="middle">Req: 100 ppm</text>
+                <text id="svg-req-dose" x="322" y="93" fill="#404040" font-size="8.5" font-family="JetBrains Mono" text-anchor="middle">Req: 100 ppm</text>
 
                 <!-- Line from SCADA to SIS Interlock -->
-                <path id="svg-command-line" d="M 322 105 L 322 140" stroke="#0284c7" stroke-width="2" fill="none"/>
+                <path id="svg-command-line" d="M 322 105 L 322 140" stroke="#808080" stroke-width="2" fill="none"/>
 
                 <!-- SIS DEFENSE SHIELD -->
-                <g id="svg-sis-shield" filter="url(#glowGreen)">
-                  <circle cx="322" cy="180" r="26" fill="#ffffff" stroke="#10b981" stroke-width="3"/>
-                  <path d="M 322 165 L 334 171 L 334 182 C 334 191 322 196 322 196 C 322 196 310 191 310 182 L 310 171 Z" fill="#10b981" opacity="0.85"/>
+                <g id="svg-sis-shield">
+                  <circle cx="322" cy="180" r="26" fill="#ffffff" stroke="#000000" stroke-width="3"/>
+                  <path d="M 322 165 L 334 171 L 334 182 C 334 191 322 196 322 196 C 322 196 310 191 310 182 L 310 171 Z" fill="#000000" opacity="0.85"/>
                 </g>
-                <text id="svg-shield-text" x="322" y="222" fill="#10b981" font-size="8.5" font-family="Inter" font-weight="700" text-anchor="middle">SIS INTERLOCK</text>
+                <text id="svg-shield-text" x="322" y="222" fill="#000000" font-size="8.5" font-family="Inter" font-weight="700" text-anchor="middle">SIS INTERLOCK</text>
 
                 <!-- Line to Dosing Pump -->
-                <path id="svg-pump-feed-line" d="M 348 180 L 400 180" stroke="#0284c7" stroke-width="2.5" fill="none"/>
+                <path id="svg-pump-feed-line" d="M 348 180 L 400 180" stroke="#808080" stroke-width="2.5" fill="none"/>
 
                 <!-- Chemical Metering Pump Node -->
-                <rect id="svg-node-pump" x="400" y="145" width="85" height="70" rx="8" stroke="#0284c7" stroke-width="1.5"/>
+                <rect id="svg-node-pump" x="400" y="145" width="85" height="70" rx="8" stroke="#808080" stroke-width="1.5"/>
                 <text x="442" y="170" font-size="9" font-family="Inter" font-weight="700" text-anchor="middle">NaOH PUMP</text>
-                <text id="svg-act-dose" x="442" y="190" fill="#10b981" font-size="8.5" font-family="JetBrains Mono" text-anchor="middle">Act: 100 ppm</text>
+                <text id="svg-act-dose" x="442" y="190" fill="#000000" font-size="8.5" font-family="JetBrains Mono" font-weight="700" text-anchor="middle">Act: 100 ppm</text>
 
                 <!-- Finished Tank Node -->
-                <rect id="svg-node-tank" x="430" y="30" width="75" height="65" rx="8" stroke="#10b981" stroke-width="1.5"/>
+                <rect id="svg-node-tank" x="430" y="30" width="75" height="65" rx="8" stroke="#808080" stroke-width="1.5"/>
                 <text x="467" y="52" font-size="8.5" font-family="Inter" font-weight="700" text-anchor="middle">STORAGE</text>
-                <text id="svg-tank-ph" x="467" y="72" fill="#10b981" font-size="12" font-family="JetBrains Mono" font-weight="800" text-anchor="middle">7.6 pH</text>
-                <path d="M 442 145 L 442 95" stroke="#0284c7" stroke-width="2" stroke-dasharray="2 2" fill="none"/>
+                <text id="svg-tank-ph" x="467" y="72" fill="#000000" font-size="12" font-family="JetBrains Mono" font-weight="800" text-anchor="middle">7.6 pH</text>
+                <path d="M 442 145 L 442 95" stroke="#808080" stroke-width="2" stroke-dasharray="2 2" fill="none"/>
               </svg>
             </div>
 
             <!-- Exploit Stage Stepper -->
             <div class="flex flex-col gap-1.5 mt-2">
-              <div class="step-item flex items-center gap-2 p-2 rounded-lg bg-slate-50 dark:bg-zinc-800/60 border border-slate-200/80 dark:border-zinc-800 text-xs text-slate-600 dark:text-zinc-400" id="step-phase-1">
-                <div class="w-5 h-5 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center font-bold font-mono text-[10px]">1</div>
+              <div class="step-item flex items-center gap-2 p-2 rounded-lg bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-xs text-[#404040] dark:text-[#c0c0c0]" id="step-phase-1">
+                <div class="w-5 h-5 rounded-full bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center font-bold font-mono text-[10px]">1</div>
                 <span>Phase 1: Sensor Payload Injection via API</span>
               </div>
-              <div class="step-item flex items-center gap-2 p-2 rounded-lg bg-slate-50 dark:bg-zinc-800/60 border border-slate-200/80 dark:border-zinc-800 text-xs text-slate-600 dark:text-zinc-400" id="step-phase-2">
-                <div class="w-5 h-5 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center font-bold font-mono text-[10px]">2</div>
+              <div class="step-item flex items-center gap-2 p-2 rounded-lg bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-xs text-[#404040] dark:text-[#c0c0c0]" id="step-phase-2">
+                <div class="w-5 h-5 rounded-full bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center font-bold font-mono text-[10px]">2</div>
                 <span>Phase 2: SCADA Target Dose Computation</span>
               </div>
-              <div class="step-item flex items-center gap-2 p-2 rounded-lg bg-slate-50 dark:bg-zinc-800/60 border border-slate-200/80 dark:border-zinc-800 text-xs text-slate-600 dark:text-zinc-400" id="step-phase-3">
-                <div class="w-5 h-5 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center font-bold font-mono text-[10px]">3</div>
+              <div class="step-item flex items-center gap-2 p-2 rounded-lg bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-xs text-[#404040] dark:text-[#c0c0c0]" id="step-phase-3">
+                <div class="w-5 h-5 rounded-full bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center font-bold font-mono text-[10px]">3</div>
                 <span>Phase 3: IEC 61511 Multi-Gate Interlock Evaluation</span>
               </div>
-              <div class="step-item flex items-center gap-2 p-2 rounded-lg bg-slate-50 dark:bg-zinc-800/60 border border-slate-200/80 dark:border-zinc-800 text-xs text-slate-600 dark:text-zinc-400" id="step-phase-4">
-                <div class="w-5 h-5 rounded-full bg-slate-200 dark:bg-zinc-700 flex items-center justify-center font-bold font-mono text-[10px]">4</div>
+              <div class="step-item flex items-center gap-2 p-2 rounded-lg bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] text-xs text-[#404040] dark:text-[#c0c0c0]" id="step-phase-4">
+                <div class="w-5 h-5 rounded-full bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff] flex items-center justify-center font-bold font-mono text-[10px]">4</div>
                 <span>Phase 4: Physical Actuator Execution (Safe vs Poisoned)</span>
               </div>
             </div>
@@ -632,71 +733,71 @@
         <div class="grid grid-cols-3 gap-3.5">
           
           <!-- GATE 1 -->
-          <div class="gate-card bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex flex-col gap-3">
+          <div class="gate-card bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 shadow-xs flex flex-col gap-3">
             <div class="flex justify-between items-center">
-              <span class="text-sm font-bold text-slate-900 dark:text-white">Gate 1: Physical Hard Bound</span>
-              <span id="gate1-status" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300">MONITORING</span>
+              <span class="text-sm font-bold text-[#000000] dark:text-[#ffffff]">Gate 1: Physical Hard Bound</span>
+              <span id="gate1-status" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] text-[#000000] dark:text-[#ffffff]">MONITORING</span>
             </div>
-            <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Enforces a strict absolute ceiling on the <b>projected resulting concentration in the finished water</b> (<span class="mono font-bold text-sky-600">resulting_ppm ≤ 150.0 ppm</span>).
+            <p class="text-xs text-[#404040] dark:text-[#c0c0c0] leading-relaxed">
+              Enforces a strict absolute ceiling on the <b>projected resulting concentration in the finished water</b> (<span class="mono font-bold text-[#000000] dark:text-[#ffffff]">resulting_ppm ≤ 150.0 ppm</span>).
             </p>
-            <div class="bg-slate-50 dark:bg-zinc-800/60 p-3 rounded-lg text-xs text-slate-700 dark:text-zinc-300 border border-slate-100 dark:border-zinc-800">
+            <div class="bg-[#ffffff] dark:bg-[#000000] p-3 rounded-lg text-xs text-[#404040] dark:text-[#c0c0c0] border border-[#c0c0c0] dark:border-[#404040]">
               <b>Physical Principle:</b> Evaluates physical finished concentration rather than raw pump stroke. Completely survives both sensor falsification and hydraulic flow spoofing attacks.
             </div>
             <div class="flex gap-1.5 mt-auto flex-wrap text-[10px] font-mono">
-              <span class="px-2 py-0.5 rounded border border-slate-200 dark:border-zinc-700 text-slate-500">EPA SDWA §141.62</span>
-              <span class="px-2 py-0.5 rounded border border-slate-200 dark:border-zinc-700 text-slate-500">IEC 61511 SIL 3</span>
-              <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300">RULE_MAX_RESULTING_PPM</span>
+              <span class="px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] text-[#808080]">EPA SDWA §141.62</span>
+              <span class="px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] text-[#808080]">IEC 61511 SIL 3</span>
+              <span class="px-2 py-0.5 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff]">RULE_MAX_RESULTING_PPM</span>
             </div>
           </div>
 
           <!-- GATE 2 -->
-          <div class="gate-card bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex flex-col gap-3">
+          <div class="gate-card bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 shadow-xs flex flex-col gap-3">
             <div class="flex justify-between items-center">
-              <span class="text-sm font-bold text-slate-900 dark:text-white">Gate 2: Rate of Change Limit</span>
-              <span id="gate2-status" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300">MONITORING</span>
+              <span class="text-sm font-bold text-[#000000] dark:text-[#ffffff]">Gate 2: Rate of Change Limit</span>
+              <span id="gate2-status" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] text-[#000000] dark:text-[#ffffff]">MONITORING</span>
             </div>
-            <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Limits dosing command slew rate acceleration to <span class="mono font-bold text-amber-600">|Δ Dose| ≤ 40.0 ppm/s</span> from the last accepted safe setpoint.
+            <p class="text-xs text-[#404040] dark:text-[#c0c0c0] leading-relaxed">
+              Limits dosing command slew rate acceleration to <span class="mono font-bold text-[#000000] dark:text-[#ffffff]">|Δ Dose| ≤ 40.0 ppm/s</span> from the last accepted safe setpoint.
             </p>
-            <div class="bg-slate-50 dark:bg-zinc-800/60 p-3 rounded-lg text-xs text-slate-700 dark:text-zinc-300 border border-slate-100 dark:border-zinc-800">
+            <div class="bg-[#ffffff] dark:bg-[#000000] p-3 rounded-lg text-xs text-[#404040] dark:text-[#c0c0c0] border border-[#c0c0c0] dark:border-[#404040]">
               <b>Physical Principle:</b> Instantaneous step changes indicate electronic sensor tampering or hardware faults, preventing shock overdosing.
             </div>
             <div class="flex gap-1.5 mt-auto flex-wrap text-[10px] font-mono">
-              <span class="px-2 py-0.5 rounded border border-slate-200 dark:border-zinc-700 text-slate-500">ISA/IEC 62443 SR 3.5</span>
-              <span class="px-2 py-0.5 rounded border border-slate-200 dark:border-zinc-700 text-slate-500">NIST SP 800-82 §9.4</span>
-              <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300">RULE_MAX_SLEW_RATE</span>
+              <span class="px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] text-[#808080]">ISA/IEC 62443 SR 3.5</span>
+              <span class="px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] text-[#808080]">NIST SP 800-82 §9.4</span>
+              <span class="px-2 py-0.5 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff]">RULE_MAX_SLEW_RATE</span>
             </div>
           </div>
 
           <!-- GATE 3 -->
-          <div class="gate-card bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-4 shadow-xs flex flex-col gap-3">
+          <div class="gate-card bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 shadow-xs flex flex-col gap-3">
             <div class="flex justify-between items-center">
-              <span class="text-sm font-bold text-slate-900 dark:text-white">Gate 3: Analytic Redundancy Cross-Check</span>
-              <span id="gate3-status" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300">MONITORING</span>
+              <span class="text-sm font-bold text-[#000000] dark:text-[#ffffff]">Gate 3: Analytic Redundancy Cross-Check</span>
+              <span id="gate3-status" class="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] text-[#000000] dark:text-[#ffffff]">MONITORING</span>
             </div>
-            <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Cross-checks Primary vs independent Verification channel within a <span class="mono font-bold text-sky-600">15% relative tolerance</span> with a <span class="mono font-bold">2-sample debounce</span>.
+            <p class="text-xs text-[#404040] dark:text-[#c0c0c0] leading-relaxed">
+              Cross-checks Primary vs independent Verification channel within a <span class="mono font-bold text-[#000000] dark:text-[#ffffff]">15% relative tolerance</span> with a <span class="mono font-bold">2-sample debounce</span>.
             </p>
-            <div class="bg-slate-50 dark:bg-zinc-800/60 p-3 rounded-lg text-xs text-slate-700 dark:text-zinc-300 border border-slate-100 dark:border-zinc-800">
+            <div class="bg-[#ffffff] dark:bg-[#000000] p-3 rounded-lg text-xs text-[#404040] dark:text-[#c0c0c0] border border-[#c0c0c0] dark:border-[#404040]">
               <b>Physical Principle:</b> The Verification channel never drives the pump. Catching channel divergence unmasks stealthy sub-threshold sensor spoofing.
             </div>
             <div class="flex gap-1.5 mt-auto flex-wrap text-[10px] font-mono">
-              <span class="px-2 py-0.5 rounded border border-slate-200 dark:border-zinc-700 text-slate-500">ISA/IEC 62443 SR 1.5</span>
-              <span class="px-2 py-0.5 rounded border border-slate-200 dark:border-zinc-700 text-slate-500">IEC 61508 HFT 1</span>
-              <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300">RULE_CROSS_CHECK</span>
+              <span class="px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] text-[#808080]">ISA/IEC 62443 SR 1.5</span>
+              <span class="px-2 py-0.5 rounded border border-[#c0c0c0] dark:border-[#404040] text-[#808080]">IEC 61508 HFT 1</span>
+              <span class="px-2 py-0.5 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff]">RULE_CROSS_CHECK</span>
             </div>
           </div>
 
         </div>
 
         <!-- FAIL-SAFE DECAY POLICY CALLOUT -->
-        <div class="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl p-4 mt-3.5 shadow-xs">
-          <div class="flex items-center gap-2 mb-2 text-xs font-bold text-slate-900 dark:text-white">
-            <i data-lucide="info" class="w-4 h-4 text-sky-600"></i>
+        <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-4 mt-3.5 shadow-xs">
+          <div class="flex items-center gap-2 mb-2 text-xs font-bold text-[#000000] dark:text-[#ffffff]">
+            <i data-lucide="info" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
             <span>Deterministic Fail-Safe Decay Policy (Judge Q&A Rationale)</span>
           </div>
-          <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+          <p class="text-xs text-[#404040] dark:text-[#c0c0c0] leading-relaxed">
             Holding the last accepted dose is safe during transient telemetry flickers. However, if the plant was already operating at an elevated dosing state when an attack began, holding that value indefinitely maintains hazardous water near the safety threshold. Our interlock policy deterministically initiates an <b>exponential decay toward the 100.0 ppm baseline after 5 consecutive blocked cycles</b>, safely de-escalating the plant without causing sudden water treatment disruptions.
           </p>
         </div>
@@ -709,22 +810,22 @@
         <!-- Toolbar -->
         <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
           <div class="flex items-center gap-2">
-            <span class="text-xs font-semibold text-slate-500 dark:text-zinc-400">Filter:</span>
+            <span class="text-xs font-semibold text-[#404040] dark:text-[#c0c0c0]">Filter:</span>
             <div class="inline-flex rounded-lg shadow-xs">
-              <button class="audit-filter-btn active text-xs px-2.5 py-1 font-medium bg-sky-600 text-white rounded-l-lg hover:bg-sky-700 transition" data-filter="ALL">ALL</button>
-              <button class="audit-filter-btn text-xs px-2.5 py-1 font-medium bg-white dark:bg-zinc-800 border-t border-b border-r border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 transition" data-filter="BLOCKED">BLOCKED</button>
-              <button class="audit-filter-btn text-xs px-2.5 py-1 font-medium bg-white dark:bg-zinc-800 border-t border-b border-r border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 rounded-r-lg hover:bg-slate-50 transition" data-filter="ALLOWED">ALLOWED</button>
+              <button class="audit-filter-btn active text-xs px-2.5 py-1 font-medium bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000] rounded-l-lg transition" data-filter="ALL">ALL</button>
+              <button class="audit-filter-btn text-xs px-2.5 py-1 font-medium bg-[#ffffff] dark:bg-[#000000] border-t border-b border-r border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition" data-filter="BLOCKED">BLOCKED</button>
+              <button class="audit-filter-btn text-xs px-2.5 py-1 font-medium bg-[#ffffff] dark:bg-[#000000] border-t border-b border-r border-[#c0c0c0] dark:border-[#404040] text-[#000000] dark:text-[#ffffff] rounded-r-lg hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition" data-filter="ALLOWED">ALLOWED</button>
             </div>
-            <span id="audit-records-count" class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">0 RECORDS</span>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-slate-200 dark:border-zinc-700 text-slate-500">ACID SQLite3 Storage</span>
+            <span id="audit-records-count" class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]">0 RECORDS</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border border-[#c0c0c0] dark:border-[#404040] text-[#808080]">ACID SQLite3 Storage</span>
           </div>
 
           <div class="flex items-center gap-2">
             <div class="relative flex items-center">
-              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 pointer-events-none"></i>
-              <input type="text" id="audit-search-input" placeholder="Search decisions, runs, gates..." class="pl-8 pr-3 py-1 text-xs rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-slate-900 dark:text-white w-64 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-xs" aria-label="Search audit trail records">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-[#808080] absolute left-2.5 pointer-events-none"></i>
+              <input type="text" id="audit-search-input" placeholder="Search decisions, runs, gates..." class="pl-8 pr-3 py-1 text-xs rounded-lg border border-[#c0c0c0] dark:border-[#404040] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff] w-64 focus:outline-none focus:ring-1 focus:ring-[#000000] dark:focus:ring-[#ffffff] shadow-xs" aria-label="Search audit trail records">
             </div>
-            <button id="btn-refresh-audit" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 shadow-xs transition" aria-label="Refresh audit records">
+            <button id="btn-refresh-audit" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg border border-[#c0c0c0] dark:border-[#404040] bg-[#ffffff] dark:bg-[#000000] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] shadow-xs transition" aria-label="Refresh audit records">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
               <span>Refresh</span>
             </button>
@@ -732,9 +833,9 @@
         </div>
 
         <!-- Flowbite Styled Table Container -->
-        <div class="flex-1 bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 rounded-xl shadow-xs overflow-y-auto">
-          <table class="w-full text-left text-xs text-slate-600 dark:text-zinc-300">
-            <thead class="text-[10px] font-mono uppercase tracking-wider bg-slate-50 dark:bg-zinc-800/80 text-slate-500 dark:text-zinc-400 sticky top-0 z-10 border-b border-slate-200 dark:border-zinc-700">
+        <div class="flex-1 bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl shadow-xs overflow-y-auto">
+          <table class="w-full text-left text-xs text-[#000000] dark:text-[#ffffff]">
+            <thead class="text-[10px] font-mono uppercase tracking-wider bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff] sticky top-0 z-10 border-b border-[#808080]">
               <tr>
                 <th class="px-3 py-2.5 font-mono">Time (ISO)</th>
                 <th class="px-3 py-2.5 font-mono">Run ID</th>
@@ -749,8 +850,8 @@
                 <th class="px-3 py-2.5">Reason / Trip Gate</th>
               </tr>
             </thead>
-            <tbody id="audit-table-body" class="divide-y divide-slate-100 dark:divide-zinc-800">
-              <tr><td colspan="11" class="text-center py-8 text-slate-400">Loading audit records from SQLite sink...</td></tr>
+            <tbody id="audit-table-body" class="divide-y divide-[#c0c0c0] dark:divide-[#404040]">
+              <tr><td colspan="11" class="text-center py-8 text-[#808080]">Loading audit records from SQLite sink...</td></tr>
             </tbody>
           </table>
         </div>
