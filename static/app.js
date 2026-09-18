@@ -48,7 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
  * Theme Management (Default: Clean White Background)
  */
 function initTheme() {
-  const savedTheme = localStorage.getItem("scada_theme") || "light";
+  const urlTheme = new URLSearchParams(window.location.search).get("theme");
+  const savedTheme = urlTheme || localStorage.getItem("scada_theme") || "light";
   applyTheme(savedTheme);
 
   const themeBtn = document.getElementById("btn-theme-toggle");
