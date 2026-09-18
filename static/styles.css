@@ -172,11 +172,13 @@ input:checked + .toggle-track .toggle-thumb {
 .nav-item {
   position: relative;
   transition: all 0.15s ease-in-out;
+  border: 1px solid transparent;
 }
 .nav-item.active {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #c0c0c0;
+  color: #000000;
   font-weight: 600;
+  border-color: #808080;
 }
 .nav-item.active::before {
   content: '';
@@ -186,14 +188,15 @@ input:checked + .toggle-track .toggle-thumb {
   bottom: 6px;
   width: 3px;
   border-radius: 0 4px 4px 0;
-  background-color: #ffffff;
+  background-color: #000000;
 }
 .dark .nav-item.active {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: #404040;
+  color: #ffffff;
+  border-color: #808080;
 }
 .dark .nav-item.active::before {
-  background-color: #000000;
+  background-color: #ffffff;
 }
 
 /* Attack Scenario Cards */
