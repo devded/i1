@@ -1,10 +1,10 @@
 /**
- * OLDSMAR SCADA SAFETY INTERLOCK CONSOLE
- * Real-time telemetry, smooth gradient live charts, cyber-physical pipeline animation,
- * and attack simulation studio.
+ * OLDSMAR SCADA CHEMICAL DOSING SAFETY INTERLOCK
+ * Tailwind CSS + Flowbite Charts (ApexCharts) Integration
+ * Default: Clean White Background (Light Theme) with Dark Mode Support
  */
 
-// Global Chart References
+// Global Flowbite / ApexCharts Instances
 let phChart = null;
 let sensorChart = null;
 let doseChart = null;
@@ -18,278 +18,400 @@ let previousTelemetry = {
   dose: null
 };
 
-// Processed Events Set
+// Processed Events Set & Timers
 const seenEventIds = new Set();
 let blockDecayTimeout = null;
 
+// Audit Trail State
+let allAuditDecisions = [];
+let currentAuditFilter = "ALL";
+let currentAuditSearch = "";
+
 document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
   initCharts();
   bindSidebarTabs();
   bindUIEvents();
   bindAttackStudio();
+  bindAuditControls();
   startTelemetryPolling();
   loadAuditTrail();
 });
 
 /**
- * Modern Chart.js Initialization with Area Gradients & Monotone Splines
+ * Theme Management (Default: Clean White Background)
+ */
+function initTheme() {
+  const savedTheme = localStorage.getItem("scada_theme") || "light";
+  applyTheme(savedTheme);
+
+  const themeBtn = document.getElementById("btn-theme-toggle");
+  if (themeBtn) {
+    themeBtn.addEventListener("click", () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      const nextTheme = isDark ? "light" : "dark";
+      applyTheme(nextTheme);
+      localStorage.setItem("scada_theme", nextTheme);
+      updateChartTheme(nextTheme);
+    });
+  }
+}
+
+function applyTheme(theme) {
+  const icon = document.getElementById("theme-icon");
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");
+    if (icon) icon.setAttribute("data-lucide", "sun");
+  } else {
+    document.documentElement.classList.remove("dark");
+    if (icon) icon.setAttribute("data-lucide", "moon");
+  }
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+function updateChartTheme(theme) {
+  if (!phChart || !sensorChart || !doseChart) return;
+  const isDark = theme === "dark";
+  const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
+  const themeMode = isDark ? "dark" : "light";
+
+  [phChart, sensorChart, doseChart].forEach((chart) => {
+    chart.updateOptions(
+      {
+        theme: { mode: themeMode },
+        grid: { borderColor: gridColor },
+        tooltip: { theme: themeMode }
+      },
+      false,
+      false
+    );
+  });
+}
+
+/**
+ * Flowbite Charts (ApexCharts) Initialization
+ * Configured per Flowbite Charts guidelines: https://flowbite.com/docs/plugins/charts/
  */
 function initCharts() {
-  const chartFont = {
-    family: "'Inter', sans-serif",
-    size: 10
-  };
+  if (typeof ApexCharts === "undefined") {
+    console.error("ApexCharts library not loaded.");
+    return;
+  }
 
-  const gridConfig = {
-    color: "rgba(255, 255, 255, 0.04)",
-    drawBorder: false
-  };
+  const isDark = document.documentElement.classList.contains("dark");
+  const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
 
-  // 1. Finished Water pH Chart
-  const ctxPh = document.getElementById("phChart").getContext("2d");
-  const phGrad = ctxPh.createLinearGradient(0, 0, 0, 250);
-  phGrad.addColorStop(0, "rgba(56, 189, 248, 0.25)");
-  phGrad.addColorStop(1, "rgba(56, 189, 248, 0.0)");
-
-  phChart = new Chart(ctxPh, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [{
-        label: "Finished Water pH",
-        data: [],
-        borderColor: "#38bdf8",
-        backgroundColor: phGrad,
-        borderWidth: 2.5,
-        cubicInterpolationMode: "monotone",
-        pointRadius: (ctx) => (ctx.dataIndex === ctx.dataset.data.length - 1 ? 4 : 0),
-        pointBackgroundColor: "#ffffff",
-        pointBorderColor: "#38bdf8",
-        pointBorderWidth: 2,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      scales: {
-        x: {
-          grid: gridConfig,
-          ticks: { font: chartFont, color: "#64748b", maxTicksLimit: 12 }
-        },
+  // 1. Finished Water pH Chart (Flowbite Area Chart with Safe & Hazard Annotations)
+  const phContainer = document.getElementById("ph-chart-container");
+  if (phContainer) {
+    const phOptions = {
+      chart: {
+        height: "100%",
+        type: "area",
+        fontFamily: "'Inter', sans-serif",
+        dropShadow: { enabled: false },
+        toolbar: { show: false },
+        animations: { enabled: false }
+      },
+      tooltip: {
+        enabled: true,
+        theme: isDark ? "dark" : "light",
+        x: { show: true },
         y: {
-          min: 6.0,
-          max: 13.5,
-          grid: gridConfig,
-          ticks: { font: chartFont, color: "#94a3b8", stepSize: 1.0 }
+          formatter: (val) => `${val !== undefined && val !== null ? val.toFixed(2) : "--"} pH`
         }
       },
-      plugins: {
-        legend: { display: false },
-        annotation: {
-          annotations: {
-            safeBand: {
-              type: "box",
-              yMin: 6.0,
-              yMax: 8.5,
-              backgroundColor: "rgba(16, 185, 129, 0.08)",
-              borderWidth: 0,
-              drawTime: "beforeDatasetsDraw"
-            },
-            elevatedBand: {
-              type: "box",
-              yMin: 8.5,
-              yMax: 10.0,
-              backgroundColor: "rgba(245, 158, 11, 0.10)",
-              borderWidth: 0,
-              drawTime: "beforeDatasetsDraw"
-            },
-            dangerBand: {
-              type: "box",
-              yMin: 10.0,
-              yMax: 13.5,
-              backgroundColor: "rgba(239, 68, 68, 0.15)",
-              borderWidth: 0,
-              drawTime: "beforeDatasetsDraw"
-            },
-            safeLine: {
-              type: "line",
-              yMin: 8.5,
-              yMax: 8.5,
-              borderColor: "rgba(245, 158, 11, 0.5)",
-              borderWidth: 1.5,
-              borderDash: [5, 4],
-              label: {
-                display: true,
-                content: "Safe Ceiling (8.5 pH)",
-                position: "start",
-                backgroundColor: "rgba(0,0,0,0.65)",
-                font: { size: 9, family: "'Inter', sans-serif" },
-                color: "#fbbf24"
-              }
-            },
-            dangerLine: {
-              type: "line",
-              yMin: 10.0,
-              yMax: 10.0,
-              borderColor: "rgba(239, 68, 68, 0.6)",
-              borderWidth: 1.5,
-              borderDash: [5, 4],
-              label: {
-                display: true,
-                content: "Hazard Threshold (10.0 pH)",
-                position: "start",
-                backgroundColor: "rgba(0,0,0,0.65)",
-                font: { size: 9, family: "'Inter', sans-serif" },
-                color: "#f87171"
-              }
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [0, 90, 100]
+        }
+      },
+      dataLabels: { enabled: false },
+      stroke: {
+        width: 2.5,
+        curve: "smooth"
+      },
+      grid: {
+        show: true,
+        strokeDashArray: 4,
+        borderColor: gridColor,
+        padding: { left: 10, right: 10, top: -10, bottom: 0 }
+      },
+      colors: ["#0284c7"],
+      series: [
+        {
+          name: "Finished Water pH",
+          data: []
+        }
+      ],
+      xaxis: {
+        categories: [],
+        tickAmount: 8,
+        labels: {
+          show: true,
+          rotate: 0,
+          hideOverlappingLabels: true,
+          style: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10px",
+            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+          }
+        },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+        tooltip: { enabled: false }
+      },
+      yaxis: {
+        min: 6.0,
+        max: 13.5,
+        tickAmount: 5,
+        labels: {
+          style: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10px",
+            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+          },
+          formatter: (val) => (val !== undefined && val !== null ? val.toFixed(1) : "")
+        }
+      },
+      annotations: {
+        yaxis: [
+          {
+            y: 8.5,
+            borderColor: "#d97706",
+            strokeDashArray: 4,
+            borderWidth: 1.5,
+            label: {
+              borderColor: "#d97706",
+              style: {
+                color: "#ffffff",
+                background: "#d97706",
+                fontSize: "9px",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 600
+              },
+              text: "Safe Ceiling (8.5 pH)"
+            }
+          },
+          {
+            y: 10.0,
+            borderColor: "#ef4444",
+            strokeDashArray: 4,
+            borderWidth: 1.5,
+            label: {
+              borderColor: "#ef4444",
+              style: {
+                color: "#ffffff",
+                background: "#ef4444",
+                fontSize: "9px",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 600
+              },
+              text: "Hazard Threshold (10.0 pH)"
             }
           }
-        }
+        ]
       }
-    }
-  });
+    };
+    phChart = new ApexCharts(phContainer, phOptions);
+    phChart.render();
+  }
 
-  // 2. Dual Sensor Channels (Primary vs Verification)
-  const ctxSensor = document.getElementById("sensorChart").getContext("2d");
-  sensorChart = new Chart(ctxSensor, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: "Primary Sensor (Attack Surface)",
-          data: [],
-          borderColor: "#f43f5e",
-          borderWidth: 2,
-          cubicInterpolationMode: "monotone",
-          pointRadius: (ctx) => (ctx.dataIndex === ctx.dataset.data.length - 1 ? 4 : 0),
-          pointBackgroundColor: "#f43f5e",
-          fill: false
-        },
-        {
-          label: "Independent Verification Channel",
-          data: [],
-          borderColor: "#10b981",
-          borderWidth: 2,
-          cubicInterpolationMode: "monotone",
-          pointRadius: (ctx) => (ctx.dataIndex === ctx.dataset.data.length - 1 ? 4 : 0),
-          pointBackgroundColor: "#10b981",
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      scales: {
-        x: {
-          grid: gridConfig,
-          ticks: { font: chartFont, color: "#64748b", maxTicksLimit: 8 }
-        },
+  // 2. Dual Sensor Channels Chart (Flowbite Multi-Series Line Chart)
+  const sensorContainer = document.getElementById("sensor-chart-container");
+  if (sensorContainer) {
+    const sensorOptions = {
+      chart: {
+        height: "100%",
+        type: "line",
+        fontFamily: "'Inter', sans-serif",
+        dropShadow: { enabled: false },
+        toolbar: { show: false },
+        animations: { enabled: false }
+      },
+      tooltip: {
+        enabled: true,
+        theme: isDark ? "dark" : "light",
+        x: { show: true },
         y: {
-          min: 0,
-          max: 12000,
-          grid: gridConfig,
-          ticks: {
-            font: chartFont,
-            color: "#94a3b8",
-            callback: (v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v)
-          }
+          formatter: (val) => `${val !== undefined && val !== null ? val.toFixed(1) : "--"} ppm`
         }
       },
-      plugins: {
-        legend: {
-          display: true,
-          position: "top",
-          labels: { font: chartFont, color: "#94a3b8", boxWidth: 10, padding: 6 }
-        }
-      }
-    }
-  });
-
-  // 3. Pump Actuator Command (The Ghost Line)
-  const ctxDose = document.getElementById("doseChart").getContext("2d");
-  const doseGrad = ctxDose.createLinearGradient(0, 0, 0, 200);
-  doseGrad.addColorStop(0, "rgba(14, 165, 233, 0.18)");
-  doseGrad.addColorStop(1, "rgba(14, 165, 233, 0.0)");
-
-  doseChart = new Chart(ctxDose, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [
+      dataLabels: { enabled: false },
+      stroke: {
+        width: [2, 2],
+        curve: "smooth"
+      },
+      colors: ["#ef4444", "#10b981"],
+      series: [
         {
-          label: "Requested Dose (SCADA Command)",
-          data: [],
-          borderColor: "rgba(239, 68, 68, 0.75)",
-          borderWidth: 2,
-          borderDash: [6, 4],
-          cubicInterpolationMode: "monotone",
-          pointRadius: (ctx) => (ctx.dataIndex === ctx.dataset.data.length - 1 ? 4 : 0),
-          pointBackgroundColor: "#ef4444",
-          fill: false
+          name: "Primary Sensor (Attack Surface)",
+          data: []
         },
         {
-          label: "Actual Actuator Dose",
-          data: [],
-          borderColor: "#38bdf8",
-          backgroundColor: doseGrad,
-          borderWidth: 2.5,
-          cubicInterpolationMode: "monotone",
-          pointRadius: (ctx) => (ctx.dataIndex === ctx.dataset.data.length - 1 ? 4 : 0),
-          pointBackgroundColor: "#38bdf8",
-          fill: true
+          name: "Independent Verification Channel",
+          data: []
         }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      scales: {
-        x: {
-          grid: gridConfig,
-          ticks: { font: chartFont, color: "#64748b", maxTicksLimit: 8 }
-        },
-        y: {
-          min: 0,
-          max: 12000,
-          grid: gridConfig,
-          ticks: {
-            font: chartFont,
-            color: "#94a3b8",
-            callback: (v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v)
+      ],
+      xaxis: {
+        categories: [],
+        tickAmount: 4,
+        labels: {
+          show: true,
+          rotate: 0,
+          hideOverlappingLabels: true,
+          style: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10px",
+            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
           }
+        },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+        tooltip: { enabled: false }
+      },
+      yaxis: {
+        min: 0,
+        max: 12000,
+        tickAmount: 4,
+        labels: {
+          style: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10px",
+            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+          },
+          formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
         }
       },
-      plugins: {
-        legend: { display: false },
-        annotation: {
-          annotations: {
-            hardCeiling: {
-              type: "line",
-              yMin: 150,
-              yMax: 150,
-              borderColor: "rgba(245, 158, 11, 0.6)",
-              borderWidth: 1.5,
-              borderDash: [4, 4],
-              label: {
-                display: true,
-                content: "SIS Hard Ceiling (150 ppm)",
-                position: "start",
-                backgroundColor: "rgba(0,0,0,0.65)",
-                font: { size: 9, family: "'Inter', sans-serif" },
-                color: "#fbbf24"
-              }
+      grid: {
+        show: true,
+        strokeDashArray: 4,
+        borderColor: gridColor,
+        padding: { left: 10, right: 10, top: -10, bottom: 0 }
+      },
+      legend: {
+        show: true,
+        position: "top",
+        horizontalAlign: "right",
+        fontSize: "10px",
+        fontFamily: "'Inter', sans-serif",
+        labels: {
+          colors: isDark ? "#9ca3af" : "#6b7280"
+        },
+        markers: { radius: 2 }
+      }
+    };
+    sensorChart = new ApexCharts(sensorContainer, sensorOptions);
+    sensorChart.render();
+  }
+
+  // 3. Pump Actuator Dose Chart (Flowbite Line Chart - Requested vs Actual Ghost Line)
+  const doseContainer = document.getElementById("dose-chart-container");
+  if (doseContainer) {
+    const doseOptions = {
+      chart: {
+        height: "100%",
+        type: "line",
+        fontFamily: "'Inter', sans-serif",
+        dropShadow: { enabled: false },
+        toolbar: { show: false },
+        animations: { enabled: false }
+      },
+      tooltip: {
+        enabled: true,
+        theme: isDark ? "dark" : "light",
+        x: { show: true },
+        y: {
+          formatter: (val) => `${val !== undefined && val !== null ? val.toFixed(1) : "--"} ppm`
+        }
+      },
+      dataLabels: { enabled: false },
+      stroke: {
+        width: [1.8, 2.5],
+        curve: "smooth",
+        dashArray: [5, 0]
+      },
+      colors: ["#ef4444", "#0284c7"],
+      series: [
+        {
+          name: "Requested Dose (SCADA Command)",
+          data: []
+        },
+        {
+          name: "Actual Actuator Dose",
+          data: []
+        }
+      ],
+      xaxis: {
+        categories: [],
+        tickAmount: 4,
+        labels: {
+          show: true,
+          rotate: 0,
+          hideOverlappingLabels: true,
+          style: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10px",
+            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+          }
+        },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+        tooltip: { enabled: false }
+      },
+      yaxis: {
+        min: 0,
+        max: 12000,
+        tickAmount: 4,
+        labels: {
+          style: {
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "10px",
+            cssClass: "text-[10px] font-medium fill-gray-500 dark:fill-gray-400"
+          },
+          formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
+        }
+      },
+      grid: {
+        show: true,
+        strokeDashArray: 4,
+        borderColor: gridColor,
+        padding: { left: 10, right: 10, top: -10, bottom: 0 }
+      },
+      legend: {
+        show: false
+      },
+      annotations: {
+        yaxis: [
+          {
+            y: 150,
+            borderColor: "#d97706",
+            strokeDashArray: 4,
+            borderWidth: 1.5,
+            label: {
+              borderColor: "#d97706",
+              style: {
+                color: "#ffffff",
+                background: "#d97706",
+                fontSize: "9px",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 600
+              },
+              text: "SIS Hard Ceiling (150 ppm)"
             }
           }
-        }
+        ]
       }
-    }
-  });
+    };
+    doseChart = new ApexCharts(doseContainer, doseOptions);
+    doseChart.render();
+  }
 }
 
 /**
@@ -302,14 +424,25 @@ function switchTab(tabKey) {
     else n.classList.remove("active");
   });
 
-  document.querySelectorAll(".view-page").forEach((page) => page.classList.remove("active"));
+  document.querySelectorAll(".view-page").forEach((page) => {
+    page.classList.add("hidden");
+    page.classList.remove("active");
+  });
   const targetPage = document.getElementById(`view-${tabKey}`);
   if (targetPage) {
+    targetPage.classList.remove("hidden");
     targetPage.classList.add("active");
   }
 
   if (tabKey === "audit-trail") {
     loadAuditTrail();
+  }
+
+  // Trigger resize so Flowbite / ApexCharts recomputes sizes if tab was hidden
+  if (tabKey === "overview") {
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 50);
   }
 
   if (window.lucide) {
@@ -327,7 +460,6 @@ function bindSidebarTabs() {
     });
   });
 
-  // Handle initial hash routing
   const initialHash = window.location.hash.replace("#", "");
   if (initialHash && document.getElementById(`view-${initialHash}`)) {
     switchTab(initialHash);
@@ -339,36 +471,48 @@ function bindSidebarTabs() {
  */
 function bindUIEvents() {
   const toggle = document.getElementById("interlock-toggle");
-  toggle.addEventListener("change", async (e) => {
-    const isEnabled = e.target.checked;
-    await fetch("/interlock", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ enabled: isEnabled })
+  if (toggle) {
+    toggle.addEventListener("change", async (e) => {
+      const isEnabled = e.target.checked;
+      await fetch("/interlock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: isEnabled })
+      });
+      updateInterlockBadge(isEnabled);
     });
-    updateInterlockBadge(isEnabled);
-  });
+  }
 
   const resetAction = async () => {
     await fetch("/reset", { method: "POST" });
-    toggle.checked = true;
+    if (toggle) {
+      toggle.checked = true;
+    }
     updateInterlockBadge(true);
     seenEventIds.clear();
-    document.getElementById("event-log").innerHTML = "";
+    const eventLog = document.getElementById("event-log");
+    if (eventLog) eventLog.innerHTML = "";
     document.querySelectorAll(".attack-scenario-card").forEach((c) => c.classList.remove("active-exploit"));
     resetCustomSliders();
     resetPipelineSchematic();
   };
 
-  document.getElementById("btn-reset-top").addEventListener("click", resetAction);
-  document.getElementById("btn-refresh-audit").addEventListener("click", loadAuditTrail);
+  const btnReset = document.getElementById("btn-reset-top");
+  if (btnReset) {
+    btnReset.addEventListener("click", resetAction);
+  }
+
+  const btnRefreshAudit = document.getElementById("btn-refresh-audit");
+  if (btnRefreshAudit) {
+    btnRefreshAudit.addEventListener("click", loadAuditTrail);
+  }
 }
 
 /**
  * Cyberattack Simulation Studio Bindings
  */
 function bindAttackStudio() {
-  // 1. Scenario launch buttons
+  // Scenario launch buttons
   document.querySelectorAll(".launch-exploit-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const variant = btn.dataset.variant;
@@ -380,65 +524,80 @@ function bindAttackStudio() {
     });
   });
 
-  // 2. Custom Exploit Sliders
+  // Custom Exploit Sliders
   const primaryRange = document.getElementById("custom-primary-range");
   const primaryLabel = document.getElementById("slider-primary-val");
-  primaryRange.addEventListener("input", (e) => {
-    primaryLabel.textContent = `${parseFloat(e.target.value).toFixed(1)} ppm`;
-  });
+  if (primaryRange && primaryLabel) {
+    primaryRange.addEventListener("input", (e) => {
+      primaryLabel.textContent = `${parseFloat(e.target.value).toFixed(1)} ppm`;
+    });
+  }
 
   const flowRange = document.getElementById("custom-flow-range");
   const flowLabel = document.getElementById("slider-flow-val");
-  flowRange.addEventListener("input", (e) => {
-    flowLabel.textContent = `${parseFloat(e.target.value).toFixed(1)} L/s`;
-  });
+  if (flowRange && flowLabel) {
+    flowRange.addEventListener("input", (e) => {
+      flowLabel.textContent = `${parseFloat(e.target.value).toFixed(1)} L/s`;
+    });
+  }
 
   // Quick presets
   document.querySelectorAll(".quick-preset").forEach((btn) => {
     btn.addEventListener("click", () => {
       const val = parseFloat(btn.dataset.val);
-      primaryRange.value = val;
-      primaryLabel.textContent = `${val.toFixed(1)} ppm`;
+      if (primaryRange) primaryRange.value = val;
+      if (primaryLabel) primaryLabel.textContent = `${val.toFixed(1)} ppm`;
     });
   });
 
   // Fire custom injection
-  document.getElementById("btn-fire-custom").addEventListener("click", async () => {
-    const pVal = parseFloat(primaryRange.value);
-    const fVal = parseFloat(flowRange.value);
+  const btnFire = document.getElementById("btn-fire-custom");
+  if (btnFire) {
+    btnFire.addEventListener("click", async () => {
+      const pVal = parseFloat(primaryRange.value);
+      const fVal = parseFloat(flowRange.value);
 
-    await fetch("/sensors/primary/inject", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ value: pVal })
-    });
-
-    if (Math.abs(fVal - 50.0) > 1.0) {
-      await fetch("/sensors/flow/inject", {
+      await fetch("/sensors/primary/inject", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ value: fVal })
+        body: JSON.stringify({ value: pVal })
       });
-    }
-  });
+
+      if (Math.abs(fVal - 50.0) > 1.0) {
+        await fetch("/sensors/flow/inject", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ value: fVal })
+        });
+      }
+    });
+  }
 
   // Stop all attacks
-  document.getElementById("btn-stop-all").addEventListener("click", async () => {
-    await fetch("/attack/stop", { method: "POST" });
-    document.querySelectorAll(".attack-scenario-card").forEach((c) => c.classList.remove("active-exploit"));
-    resetCustomSliders();
-  });
+  const btnStop = document.getElementById("btn-stop-all");
+  if (btnStop) {
+    btnStop.addEventListener("click", async () => {
+      await fetch("/attack/stop", { method: "POST" });
+      document.querySelectorAll(".attack-scenario-card").forEach((c) => c.classList.remove("active-exploit"));
+      resetCustomSliders();
+    });
+  }
 }
 
 function resetCustomSliders() {
-  document.getElementById("custom-primary-range").value = 100;
-  document.getElementById("slider-primary-val").textContent = "100.0 ppm";
-  document.getElementById("custom-flow-range").value = 50;
-  document.getElementById("slider-flow-val").textContent = "50.0 L/s";
+  const pRange = document.getElementById("custom-primary-range");
+  const pLabel = document.getElementById("slider-primary-val");
+  if (pRange) pRange.value = 100;
+  if (pLabel) pLabel.textContent = "100.0 ppm";
+
+  const fRange = document.getElementById("custom-flow-range");
+  const fLabel = document.getElementById("slider-flow-val");
+  if (fRange) fRange.value = 50;
+  if (fLabel) fLabel.textContent = "50.0 L/s";
 }
 
 /**
- * 500ms Real-Time Telemetry Polling
+ * Real-Time Telemetry Polling (500ms)
  */
 function startTelemetryPolling() {
   const poll = async () => {
@@ -451,7 +610,7 @@ function startTelemetryPolling() {
       console.warn("Dropped telemetry tick:", err);
     }
   };
-  poll(); // Run immediate initial fetch
+  poll();
   setInterval(poll, 500);
 }
 
@@ -460,17 +619,20 @@ function startTelemetryPolling() {
  */
 function renderState(state) {
   // 1. Header Telemetry
-  document.getElementById("run-id-text").textContent = state.run_id;
-  document.getElementById("uptime-text").textContent = `${state.uptime_seconds.toFixed(1)}s`;
+  const runIdEl = document.getElementById("run-id-text");
+  if (runIdEl) runIdEl.textContent = state.run_id ? state.run_id.slice(-6) : "INIT";
+
+  const uptimeEl = document.getElementById("uptime-text");
+  if (uptimeEl) uptimeEl.textContent = `${state.uptime_seconds.toFixed(1)}s`;
 
   // Sync SIS Key Switch toggle
   const toggle = document.getElementById("interlock-toggle");
-  if (toggle.checked !== state.interlock_on) {
+  if (toggle && toggle.checked !== state.interlock_on) {
     toggle.checked = state.interlock_on;
   }
   updateInterlockBadge(state.interlock_on);
 
-  // Status Pill & Sustained Block Choreography
+  // Status Pill
   updateStatusPill(state);
 
   // 2. Stat Cards
@@ -482,39 +644,50 @@ function renderState(state) {
   updateStat("stat-resulting", "stat-resulting-delta", control.resulting_ppm, previousTelemetry.resulting, "ppm");
   updateStat("stat-dose", "stat-dose-delta", control.actual_dose_ppm, previousTelemetry.dose, "ppm");
 
-  // pH readout & dynamic styling
+  // pH readout
   const phEl = document.getElementById("stat-ph");
-  phEl.textContent = control.ph.toFixed(2);
-  phEl.className = `stat-value tabular-nums ph-${control.ph_band}`;
+  if (phEl) {
+    phEl.textContent = control.ph.toFixed(2);
+    phEl.className = `stat-value text-2xl font-bold tracking-tight ph-${control.ph_band}`;
+  }
 
   const phBadge = document.getElementById("ph-band-badge");
-  phBadge.textContent = `${control.ph_band.toUpperCase()} BAND`;
-  phBadge.className =
-    control.ph_band === "safe"
-      ? "badge badge-outline"
-      : control.ph_band === "elevated"
-      ? "badge badge-warning"
-      : "badge badge-destructive";
+  if (phBadge) {
+    phBadge.textContent = `${control.ph_band.toUpperCase()} BAND`;
+    phBadge.className =
+      control.ph_band === "safe"
+        ? "text-[10px] font-semibold px-2 py-0.5 rounded-full border border-emerald-200 text-emerald-700 dark:border-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40"
+        : control.ph_band === "elevated"
+        ? "text-[10px] font-semibold px-2 py-0.5 rounded-full border border-amber-200 text-amber-700 dark:border-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40"
+        : "text-[10px] font-semibold px-2 py-0.5 rounded-full border border-red-200 text-red-700 dark:border-red-800 dark:text-red-300 bg-red-50 dark:bg-red-950/40";
+  }
 
   updateDelta("stat-ph-delta", control.ph, previousTelemetry.ph, "pH");
 
   // Ghost divergence badge
   const ghostBadge = document.getElementById("ghost-divergence-badge");
-  const doseDiff = Math.abs(control.requested_dose_ppm - control.actual_dose_ppm);
-  if (doseDiff > 50.0) {
-    ghostBadge.textContent = `DIVERGENCE: +${doseDiff.toFixed(0)} PPM`;
-    ghostBadge.className = "badge badge-destructive";
-  } else {
-    ghostBadge.textContent = "ALIGNED";
-    ghostBadge.className = "badge badge-secondary";
+  if (ghostBadge) {
+    const doseDiff = Math.abs(control.requested_dose_ppm - control.actual_dose_ppm);
+    if (doseDiff > 50.0) {
+      ghostBadge.textContent = `DIVERGENCE: +${doseDiff.toFixed(0)} PPM`;
+      ghostBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300";
+    } else {
+      ghostBadge.textContent = "ALIGNED";
+      ghostBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300";
+    }
   }
 
   // Sensor Channel Divergence Badge
   const denom = Math.max(sensors.verification_ppm, 1.0);
   const divPct = (Math.abs(sensors.primary_ppm - sensors.verification_ppm) / denom) * 100;
   const divBadge = document.getElementById("divergence-badge");
-  divBadge.textContent = `DIV: ${divPct.toFixed(1)}%`;
-  divBadge.className = divPct > 15.0 ? "badge badge-destructive" : "badge badge-secondary";
+  if (divBadge) {
+    divBadge.textContent = `DIV: ${divPct.toFixed(1)}%`;
+    divBadge.className =
+      divPct > 15.0
+        ? "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300"
+        : "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300";
+  }
 
   // Cache for deltas
   previousTelemetry = {
@@ -525,23 +698,36 @@ function renderState(state) {
     dose: control.actual_dose_ppm
   };
 
-  // 3. Update Chart Curves
+  // 3. Update Flowbite ApexCharts Telemetry Curves
   const history = state.history;
-  const labels = history.time_labels;
+  const labels = history.time_labels || [];
 
-  phChart.data.labels = labels;
-  phChart.data.datasets[0].data = history.ph;
-  phChart.update("none");
+  if (phChart) {
+    phChart.updateSeries([{ name: "Finished Water pH", data: history.ph }], false);
+    phChart.updateOptions({ xaxis: { categories: labels, tickAmount: 8 } }, false, false);
+  }
 
-  sensorChart.data.labels = labels;
-  sensorChart.data.datasets[0].data = history.primary;
-  sensorChart.data.datasets[1].data = history.verification;
-  sensorChart.update("none");
+  if (sensorChart) {
+    sensorChart.updateSeries(
+      [
+        { name: "Primary Sensor (Attack Surface)", data: history.primary },
+        { name: "Independent Verification Channel", data: history.verification }
+      ],
+      false
+    );
+    sensorChart.updateOptions({ xaxis: { categories: labels, tickAmount: 4 } }, false, false);
+  }
 
-  doseChart.data.labels = labels;
-  doseChart.data.datasets[0].data = history.requested_dose;
-  doseChart.data.datasets[1].data = history.actual_dose;
-  doseChart.update("none");
+  if (doseChart) {
+    doseChart.updateSeries(
+      [
+        { name: "Requested Dose (SCADA Command)", data: history.requested_dose },
+        { name: "Actual Actuator Dose", data: history.actual_dose }
+      ],
+      false
+    );
+    doseChart.updateOptions({ xaxis: { categories: labels, tickAmount: 4 } }, false, false);
+  }
 
   // 4. Update Cyber-Physical Pipeline & Defense Schematic
   updatePipelineSchematic(state);
@@ -550,7 +736,7 @@ function renderState(state) {
   updateStepperAndGates(state);
 
   // 6. Update Event Log
-  renderEvents(state.events);
+  renderEvents(state.events || []);
 }
 
 /**
@@ -563,91 +749,96 @@ function updatePipelineSchematic(state) {
   const isDanger = state.system_status === "DANGER";
   const isAttacking = state.active_attack !== null || sensors.primary_injected || sensors.flow_injected;
 
-  // Text values on SVG
-  document.getElementById("svg-text-primary").textContent = `P: ${sensors.primary_ppm.toFixed(0)} ppm`;
-  document.getElementById("svg-text-verif").textContent = `V: ${sensors.verification_ppm.toFixed(0)} ppm`;
-  document.getElementById("svg-req-dose").textContent = `Req: ${control.requested_dose_ppm.toFixed(0)} ppm`;
-  document.getElementById("svg-act-dose").textContent = `Act: ${control.actual_dose_ppm.toFixed(0)} ppm`;
-  document.getElementById("svg-tank-ph").textContent = `${control.ph.toFixed(2)} pH`;
+  const pSvg = document.getElementById("svg-text-primary");
+  if (pSvg) pSvg.textContent = `P: ${sensors.primary_ppm.toFixed(0)} ppm`;
 
-  // Attacker Beam
+  const vSvg = document.getElementById("svg-text-verif");
+  if (vSvg) vSvg.textContent = `V: ${sensors.verification_ppm.toFixed(0)} ppm`;
+
+  const reqSvg = document.getElementById("svg-req-dose");
+  if (reqSvg) reqSvg.textContent = `Req: ${control.requested_dose_ppm.toFixed(0)} ppm`;
+
+  const actSvg = document.getElementById("svg-act-dose");
+  if (actSvg) actSvg.textContent = `Act: ${control.actual_dose_ppm.toFixed(0)} ppm`;
+
+  const tankSvg = document.getElementById("svg-tank-ph");
+  if (tankSvg) tankSvg.textContent = `${control.ph.toFixed(2)} pH`;
+
   const attackBeam = document.getElementById("svg-attack-beam");
   const attackLabel = document.getElementById("svg-attack-label");
+  const nodeSensor = document.getElementById("svg-node-sensor");
   if (isAttacking) {
-    attackBeam.setAttribute("opacity", "1");
-    attackLabel.setAttribute("opacity", "1");
-    document.getElementById("svg-node-sensor").setAttribute("stroke", "#ef4444");
+    if (attackBeam) attackBeam.setAttribute("opacity", "1");
+    if (attackLabel) attackLabel.setAttribute("opacity", "1");
+    if (nodeSensor) nodeSensor.setAttribute("stroke", "#ef4444");
   } else {
-    attackBeam.setAttribute("opacity", "0");
-    attackLabel.setAttribute("opacity", "0");
-    document.getElementById("svg-node-sensor").setAttribute("stroke", "#0ea5e9");
+    if (attackBeam) attackBeam.setAttribute("opacity", "0");
+    if (attackLabel) attackLabel.setAttribute("opacity", "0");
+    if (nodeSensor) nodeSensor.setAttribute("stroke", "#0284c7");
   }
 
-  // SIS Defense Shield
   const shield = document.getElementById("svg-sis-shield");
   const shieldText = document.getElementById("svg-shield-text");
   const pipelineBadge = document.getElementById("pipeline-status-badge");
 
-  if (!state.interlock_on) {
-    // Interlock Bypassed (Switch OFF)
-    shield.setAttribute("filter", "");
-    shield.querySelector("circle").setAttribute("stroke", "#71717a");
-    shield.querySelector("circle").setAttribute("stroke-dasharray", "4 4");
-    shield.querySelector("path").setAttribute("fill", "#71717a");
-    shieldText.textContent = "SIS BYPASSED";
-    shieldText.setAttribute("fill", "#71717a");
-    pipelineBadge.textContent = "SAFETY BYPASSED";
-    pipelineBadge.className = "badge badge-destructive";
-  } else if (isBlocked) {
-    // Actively Deflecting Malicious Attack!
-    shield.setAttribute("filter", "url(#glowRed)");
-    shield.querySelector("circle").setAttribute("stroke", "#ef4444");
-    shield.querySelector("circle").setAttribute("stroke-dasharray", "");
-    shield.querySelector("path").setAttribute("fill", "#ef4444");
-    shieldText.textContent = "SHIELD: DOSE DEFLECTED";
-    shieldText.setAttribute("fill", "#ef4444");
-    pipelineBadge.textContent = "DOSE BLOCKED BY SIS";
-    pipelineBadge.className = "badge badge-destructive";
-  } else {
-    // Armed and nominal
-    shield.setAttribute("filter", "url(#glowGreen)");
-    shield.querySelector("circle").setAttribute("stroke", "#10b981");
-    shield.querySelector("circle").setAttribute("stroke-dasharray", "");
-    shield.querySelector("path").setAttribute("fill", "#10b981");
-    shieldText.textContent = "SIS INTERLOCK (SIL-3)";
-    shieldText.setAttribute("fill", "#10b981");
-    pipelineBadge.textContent = "SHIELD ARMED";
-    pipelineBadge.className = "badge badge-outline";
+  if (shield && shieldText && pipelineBadge) {
+    if (!state.interlock_on) {
+      shield.setAttribute("filter", "");
+      shield.querySelector("circle").setAttribute("stroke", "#71717a");
+      shield.querySelector("circle").setAttribute("stroke-dasharray", "4 4");
+      shield.querySelector("path").setAttribute("fill", "#71717a");
+      shieldText.textContent = "SIS BYPASSED";
+      shieldText.setAttribute("fill", "#71717a");
+      pipelineBadge.textContent = "SAFETY BYPASSED";
+      pipelineBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300";
+    } else if (isBlocked) {
+      shield.setAttribute("filter", "url(#glowRed)");
+      shield.querySelector("circle").setAttribute("stroke", "#ef4444");
+      shield.querySelector("circle").setAttribute("stroke-dasharray", "");
+      shield.querySelector("path").setAttribute("fill", "#ef4444");
+      shieldText.textContent = "SHIELD: DEFLECTED";
+      shieldText.setAttribute("fill", "#ef4444");
+      pipelineBadge.textContent = "DOSE BLOCKED BY SIS";
+      pipelineBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300";
+    } else {
+      shield.setAttribute("filter", "url(#glowGreen)");
+      shield.querySelector("circle").setAttribute("stroke", "#10b981");
+      shield.querySelector("circle").setAttribute("stroke-dasharray", "");
+      shield.querySelector("path").setAttribute("fill", "#10b981");
+      shieldText.textContent = "SIS INTERLOCK";
+      shieldText.setAttribute("fill", "#10b981");
+      pipelineBadge.textContent = "SHIELD ACTIVE";
+      pipelineBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300";
+    }
   }
 
-  // Pump Actuator & Tank Color
   const pumpNode = document.getElementById("svg-node-pump");
   const tankNode = document.getElementById("svg-node-tank");
-  const tankText = document.getElementById("svg-tank-ph");
 
-  if (isDanger) {
-    pumpNode.setAttribute("stroke", "#ef4444");
-    pumpNode.setAttribute("fill", "rgba(239, 68, 68, 0.2)");
-    tankNode.setAttribute("stroke", "#ef4444");
-    tankNode.setAttribute("fill", "rgba(239, 68, 68, 0.3)");
-    tankText.setAttribute("fill", "#ef4444");
-  } else if (control.ph_band === "elevated") {
-    pumpNode.setAttribute("stroke", "#f59e0b");
-    tankNode.setAttribute("stroke", "#f59e0b");
-    tankText.setAttribute("fill", "#fbbf24");
-  } else {
-    pumpNode.setAttribute("stroke", "#0ea5e9");
-    pumpNode.setAttribute("fill", "#18181b");
-    tankNode.setAttribute("stroke", "#10b981");
-    tankNode.setAttribute("fill", "#18181b");
-    tankText.setAttribute("fill", "#34d399");
+  if (pumpNode && tankNode && tankSvg) {
+    if (isDanger) {
+      pumpNode.setAttribute("stroke", "#ef4444");
+      tankNode.setAttribute("stroke", "#ef4444");
+      tankSvg.setAttribute("fill", "#ef4444");
+    } else if (control.ph_band === "elevated") {
+      pumpNode.setAttribute("stroke", "#d97706");
+      tankNode.setAttribute("stroke", "#d97706");
+      tankSvg.setAttribute("fill", "#d97706");
+    } else {
+      pumpNode.setAttribute("stroke", "#0284c7");
+      tankNode.setAttribute("stroke", "#10b981");
+      tankSvg.setAttribute("fill", "#10b981");
+    }
   }
 }
 
 function resetPipelineSchematic() {
-  document.getElementById("svg-attack-beam").setAttribute("opacity", "0");
-  document.getElementById("svg-attack-label").setAttribute("opacity", "0");
-  document.getElementById("svg-node-sensor").setAttribute("stroke", "#0ea5e9");
+  const attackBeam = document.getElementById("svg-attack-beam");
+  if (attackBeam) attackBeam.setAttribute("opacity", "0");
+  const attackLabel = document.getElementById("svg-attack-label");
+  if (attackLabel) attackLabel.setAttribute("opacity", "0");
+  const nodeSensor = document.getElementById("svg-node-sensor");
+  if (nodeSensor) nodeSensor.setAttribute("stroke", "#0284c7");
 }
 
 /**
@@ -663,21 +854,23 @@ function updateStepperAndGates(state) {
   const step3 = document.getElementById("step-phase-3");
   const step4 = document.getElementById("step-phase-4");
 
-  if (isAttacking) {
-    step1.className = "step-item passed";
-    step2.className = "step-item passed";
-    if (state.interlock_on && isBlocked) {
-      step3.className = "step-item active";
-      step4.className = "step-item passed";
-    } else if (!state.interlock_on && isDanger) {
-      step3.className = "step-item";
-      step4.className = "step-item active";
+  if (step1 && step2 && step3 && step4) {
+    if (isAttacking) {
+      step1.classList.add("active");
+      step2.classList.add("active");
+      if (state.interlock_on && isBlocked) {
+        step3.classList.add("active");
+        step4.classList.remove("active");
+      } else if (!state.interlock_on && isDanger) {
+        step3.classList.remove("active");
+        step4.classList.add("active");
+      }
+    } else {
+      step1.classList.remove("active");
+      step2.classList.remove("active");
+      step3.classList.remove("active");
+      step4.classList.remove("active");
     }
-  } else {
-    step1.className = "step-item";
-    step2.className = "step-item";
-    step3.className = "step-item";
-    step4.className = "step-item";
   }
 
   // Safety Gate Badges
@@ -686,57 +879,71 @@ function updateStepperAndGates(state) {
   const g3 = document.getElementById("gate3-status");
 
   const lastReason = state.last_decision ? state.last_decision.reason : "";
-  if (isBlocked && lastReason.includes("HARD_BOUND_EXCEEDED")) {
-    g1.textContent = "TRIPPED";
-    g1.className = "gate-badge badge-destructive";
-  } else {
-    g1.textContent = "MONITORING";
-    g1.className = "gate-badge badge-outline";
+  if (g1) {
+    if (isBlocked && lastReason.includes("HARD_BOUND_EXCEEDED")) {
+      g1.textContent = "TRIPPED";
+      g1.className = "gate-badge badge-destructive";
+    } else {
+      g1.textContent = "MONITORING";
+      g1.className = "gate-badge badge-outline";
+    }
   }
 
-  if (isBlocked && lastReason.includes("RATE_OF_CHANGE_EXCEEDED")) {
-    g2.textContent = "TRIPPED";
-    g2.className = "gate-badge badge-destructive";
-  } else {
-    g2.textContent = "MONITORING";
-    g2.className = "gate-badge badge-outline";
+  if (g2) {
+    if (isBlocked && lastReason.includes("RATE_OF_CHANGE_EXCEEDED")) {
+      g2.textContent = "TRIPPED";
+      g2.className = "gate-badge badge-destructive";
+    } else {
+      g2.textContent = "MONITORING";
+      g2.className = "gate-badge badge-outline";
+    }
   }
 
-  if (isBlocked && lastReason.includes("SENSOR_DISAGREEMENT")) {
-    g3.textContent = "TRIPPED";
-    g3.className = "gate-badge badge-destructive";
-  } else {
-    g3.textContent = "MONITORING";
-    g3.className = "gate-badge badge-outline";
+  if (g3) {
+    if (isBlocked && lastReason.includes("SENSOR_DISAGREEMENT")) {
+      g3.textContent = "TRIPPED";
+      g3.className = "gate-badge badge-destructive";
+    } else {
+      g3.textContent = "MONITORING";
+      g3.className = "gate-badge badge-outline";
+    }
   }
 }
 
 /**
- * Status Pill & Sustained 3s Block Glow Choreography
+ * Status Pill & Sustained 3s Block Glow
  */
 function updateStatusPill(state) {
   const pill = document.getElementById("status-pill");
   const text = document.getElementById("status-text");
   const sideStatus = document.getElementById("sidebar-status-text");
 
+  if (!pill || !text) return;
+
   if (state.system_status === "DANGER") {
-    pill.className = "status-pill danger";
+    pill.className = "status-pill tripped";
     text.textContent = `CRITICAL DANGER: pH ${state.control.ph.toFixed(2)}`;
-    sideStatus.textContent = "HAZARD TRIP";
-    sideStatus.className = "badge badge-destructive";
+    if (sideStatus) {
+      sideStatus.textContent = "HAZARD TRIP";
+      sideStatus.className = "text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300";
+    }
     triggerBlockGlow();
   } else if (state.system_status === "BLOCKED") {
-    pill.className = "status-pill blocked";
+    pill.className = "status-pill tripped";
     const gateName = state.last_decision ? state.last_decision.reason.split(":")[0] : "DOSE BLOCKED";
     text.textContent = `BLOCKED: ${gateName}`;
-    sideStatus.textContent = "DOSE BLOCKED";
-    sideStatus.className = "badge badge-destructive";
+    if (sideStatus) {
+      sideStatus.textContent = "DOSE BLOCKED";
+      sideStatus.className = "text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300";
+    }
     triggerBlockGlow();
   } else {
     pill.className = "status-pill nominal";
     text.textContent = "NOMINAL OPERATION";
-    sideStatus.textContent = "OPTIMAL";
-    sideStatus.className = "badge badge-outline";
+    if (sideStatus) {
+      sideStatus.textContent = "OPTIMAL";
+      sideStatus.className = "text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300";
+    }
   }
 }
 
@@ -750,37 +957,42 @@ function triggerBlockGlow() {
 
 function updateInterlockBadge(isEnabled) {
   const badge = document.getElementById("interlock-badge");
+  if (!badge) return;
   if (isEnabled) {
     badge.textContent = "ENGAGED";
-    badge.className = "badge badge-outline";
+    badge.className = "ml-1 text-[9px] font-semibold px-1.5 py-0.2 rounded-full border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300";
   } else {
     badge.textContent = "BYPASSED";
-    badge.className = "badge badge-destructive";
+    badge.className = "ml-1 text-[9px] font-semibold px-1.5 py-0.2 rounded-full border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300";
   }
 }
 
 function updateStat(valId, deltaId, current, previous, unit, decimals = 1) {
-  document.getElementById(valId).textContent = current.toFixed(decimals);
+  const valEl = document.getElementById(valId);
+  if (valEl && current !== undefined && current !== null) {
+    valEl.textContent = current.toFixed(decimals);
+  }
   updateDelta(deltaId, current, previous, unit, decimals);
 }
 
 function updateDelta(elemId, current, previous, unit, decimals = 1) {
   const el = document.getElementById(elemId);
-  if (previous === null || previous === undefined) {
+  if (!el) return;
+  if (previous === null || previous === undefined || current === undefined || current === null) {
     el.textContent = "--";
-    el.style.color = "var(--muted-foreground)";
+    el.className = "mono text-gray-400 dark:text-gray-500";
     return;
   }
   const diff = current - previous;
   if (Math.abs(diff) < 0.05) {
     el.textContent = "■ 0.0";
-    el.style.color = "var(--muted-foreground)";
+    el.className = "mono text-gray-400 dark:text-gray-500";
   } else if (diff > 0) {
     el.textContent = `▲ +${diff.toFixed(decimals)}`;
-    el.style.color = "#f87171";
+    el.className = "mono font-semibold text-red-600 dark:text-red-400";
   } else {
     el.textContent = `▼ ${diff.toFixed(decimals)}`;
-    el.style.color = "#38bdf8";
+    el.className = "mono font-semibold text-sky-600 dark:text-sky-400";
   }
 }
 
@@ -790,7 +1002,8 @@ function updateDelta(elemId, current, previous, unit, decimals = 1) {
 function renderEvents(events) {
   const container = document.getElementById("event-log");
   const countBadge = document.getElementById("event-count-badge");
-  countBadge.textContent = `${events.length} EVENTS`;
+  if (countBadge) countBadge.textContent = `${events.length} EVENTS`;
+  if (!container) return;
 
   events.forEach((ev) => {
     if (seenEventIds.has(ev.id)) return;
@@ -798,7 +1011,7 @@ function renderEvents(events) {
 
     const item = document.createElement("div");
     const itemType = ev.type.toLowerCase();
-    item.className = `event-item ${itemType}`;
+    item.className = `event-entry ${itemType}`;
 
     let badgeClass = "badge-secondary";
     if (ev.type === "BLOCKED") badgeClass = "badge-destructive";
@@ -806,12 +1019,12 @@ function renderEvents(events) {
     else if (ev.type === "ATTACK") badgeClass = "badge-warning";
 
     item.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div class="event-entry-top">
         <span class="badge ${badgeClass}">${ev.type}</span>
-        <span class="mono" style="font-size: 0.65rem; color: var(--muted-foreground);">${ev.time_str}</span>
+        <span class="event-time mono">${ev.time_str}</span>
       </div>
-      <div style="font-weight: 600; color: var(--foreground);">${escapeHtml(ev.message)}</div>
-      <div style="font-size: 0.68rem; color: var(--muted-foreground);">${escapeHtml(ev.detail)}</div>
+      <div class="event-msg"><b>${escapeHtml(ev.message)}</b></div>
+      <div class="text-[10px] text-gray-500 dark:text-gray-400">${escapeHtml(ev.detail)}</div>
     `;
 
     container.insertBefore(item, container.firstChild);
@@ -819,58 +1032,107 @@ function renderEvents(events) {
 }
 
 /**
- * Query SQLite Audit Trail
+ * SQLite Audit Trail Controls & Table Rendering
  */
+function bindAuditControls() {
+  const filterBtns = document.querySelectorAll(".audit-filter-btn");
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filterBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentAuditFilter = btn.dataset.filter;
+      renderAuditTable();
+    });
+  });
+
+  const searchInput = document.getElementById("audit-search-input");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      currentAuditSearch = e.target.value.trim().toLowerCase();
+      renderAuditTable();
+    });
+  }
+}
+
 async function loadAuditTrail() {
   const tbody = document.getElementById("audit-table-body");
+  if (!tbody) return;
+
   try {
     const runsRes = await fetch("/runs");
     const runs = await runsRes.json();
     if (!runs || !runs.length) {
-      tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 2rem; color: var(--muted-foreground);">No audit records found in SQLite sink.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="11" class="text-center p-8 text-gray-400 dark:text-gray-500">No audit records found in SQLite sink.</td></tr>`;
       return;
     }
 
     const latestRun = runs[0].run_id;
     const decRes = await fetch(`/runs/${latestRun}/decisions?limit=100`);
     const decData = await decRes.json();
-    const records = decData.decisions || [];
+    allAuditDecisions = decData.decisions || [];
 
-    if (!records.length) {
-      tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 2rem; color: var(--muted-foreground);">Run ${latestRun} has no decisions recorded.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = records
-      .slice(-30)
-      .reverse()
-      .map(
-        (r) => `
-      <tr>
-        <td class="mono" style="color: var(--muted-foreground);">${r.iso_time.split(" ")[1] || r.iso_time}</td>
-        <td class="mono font-bold">${r.run_id.slice(-6)}</td>
-        <td>
-          <span class="badge ${r.decision === "BLOCKED" ? "badge-destructive" : "badge-outline"}">
-            ${r.decision}
-          </span>
-        </td>
-        <td class="mono font-bold" style="color: #f87171;">${r.requested_dose.toFixed(1)}</td>
-        <td class="mono font-bold" style="color: #38bdf8;">${r.actual_dose.toFixed(1)}</td>
-        <td class="mono">${r.resulting_ppm.toFixed(1)}</td>
-        <td class="mono font-bold ${r.ph > 10 ? "ph-dangerous" : r.ph > 8.5 ? "ph-elevated" : "ph-safe"}">${r.ph.toFixed(2)}</td>
-        <td class="mono">${r.primary_ppm.toFixed(1)}</td>
-        <td class="mono">${r.verification_ppm.toFixed(1)}</td>
-        <td class="mono">${r.flow.toFixed(1)}</td>
-        <td style="font-size: 0.7rem; color: var(--muted-foreground); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(r.reason)}">
-          ${escapeHtml(r.reason)}
-        </td>
-      </tr>
-    `
-      )
-      .join("");
+    renderAuditTable();
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: #f87171; padding: 2rem;">Failed to load audit records: ${err}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" class="text-center text-red-500 p-8">Failed to load audit records: ${err}</td></tr>`;
   }
+}
+
+function renderAuditTable() {
+  const tbody = document.getElementById("audit-table-body");
+  const countBadge = document.getElementById("audit-records-count");
+  if (!tbody) return;
+
+  let filtered = allAuditDecisions;
+
+  // 1. Decision Filter (ALL, BLOCKED, ALLOWED)
+  if (currentAuditFilter !== "ALL") {
+    filtered = filtered.filter((r) => r.decision === currentAuditFilter);
+  }
+
+  // 2. Search Term Filter
+  if (currentAuditSearch) {
+    filtered = filtered.filter((r) => {
+      const haystack = `${r.iso_time} ${r.run_id} ${r.decision} ${r.reason} ${r.primary_ppm} ${r.actual_dose}`.toLowerCase();
+      return haystack.includes(currentAuditSearch);
+    });
+  }
+
+  if (countBadge) {
+    countBadge.textContent = `${filtered.length} RECORDS`;
+  }
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="11" class="text-center p-8 text-gray-400 dark:text-gray-500">No matching audit records.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered
+    .slice(-50)
+    .reverse()
+    .map(
+      (r) => `
+    <tr class="hover:bg-gray-50 dark:hover:bg-gray-750 transition">
+      <td class="px-3 py-2 font-mono text-gray-500 dark:text-gray-400">${r.iso_time.split(" ")[1] || r.iso_time}</td>
+      <td class="px-3 py-2 font-mono font-bold text-gray-900 dark:text-white">${r.run_id.slice(-6)}</td>
+      <td class="px-3 py-2">
+        <span class="badge ${r.decision === "BLOCKED" ? "badge-destructive" : "badge-outline"}">
+          ${r.decision}
+        </span>
+      </td>
+      <td class="px-3 py-2 font-mono font-bold text-red-600 dark:text-red-400">${r.requested_dose.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono font-bold text-sky-600 dark:text-sky-400">${r.actual_dose.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-gray-700 dark:text-gray-300">${r.resulting_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono font-bold ${r.ph > 10 ? "ph-danger" : r.ph > 8.5 ? "ph-elevated" : "ph-safe"}">${r.ph.toFixed(2)}</td>
+      <td class="px-3 py-2 font-mono text-gray-700 dark:text-gray-300">${r.primary_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-gray-700 dark:text-gray-300">${r.verification_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-gray-700 dark:text-gray-300">${r.flow.toFixed(1)}</td>
+      <td class="px-3 py-2 text-[11px] text-gray-500 dark:text-gray-400 max-w-[240px] truncate" title="${escapeHtml(r.reason)}">
+        ${escapeHtml(r.reason)}
+      </td>
+    </tr>
+  `
+    )
+    .join("");
 }
 
 function escapeHtml(str) {
