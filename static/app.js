@@ -15,6 +15,19 @@ let doseChart = null;
 let currentSensorYMax = 250;
 let currentDoseYMax = 250;
 
+// Color Palette Constants for Charts & Telemetry
+const PALETTE = {
+  phLine: "#0284c7",          // Sky Blue (Neutralization Curve)
+  phSafe: "#059669",          // Emerald Green (Normal Safe pH)
+  phElevated: "#d97706",      // Amber-600 (Elevated Ceiling 8.5)
+  phDanger: "#dc2626",        // Crimson Red (Hazard Threshold 10.0)
+  sensorPrimary: "#ef4444",    // Rose/Red (Compromised Sensor Attack Surface)
+  sensorVerif: "#10b981",      // Emerald-500 (Out-of-band Verification)
+  doseRequested: "#f97316",    // Orange-500 (SCADA Requested command)
+  doseActual: "#0284c7",       // Sky-600 (Physical Dosing Output)
+  doseCeiling: "#dc2626"       // Red-600 (150 ppm Physical Safety Limit)
+};
+
 // Telemetry State Tracking for Deltas
 let previousTelemetry = {
   flow: null,
@@ -136,30 +149,27 @@ function applyTheme(theme) {
 function updateChartTheme(theme) {
   if (!phChart || !sensorChart || !doseChart) return;
   const isDark = theme === "dark";
-  const gridColor = isDark ? "#404040" : "#c0c0c0";
+  const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
   const themeMode = isDark ? "dark" : "light";
-  const primaryColor = isDark ? "#ffffff" : "#000000";
-  const midColor = isDark ? "#c0c0c0" : "#808080";
-  const textColor = isDark ? "#000000" : "#ffffff";
 
   phChart.updateOptions(
     {
       theme: { mode: themeMode },
       grid: { borderColor: gridColor },
-      colors: [primaryColor],
+      colors: [PALETTE.phLine],
       tooltip: { theme: themeMode },
       annotations: {
         yaxis: [
           {
             y: 8.5,
-            borderColor: "#808080",
+            borderColor: PALETTE.phElevated,
             strokeDashArray: 4,
             borderWidth: 1.5,
             label: {
-              borderColor: "#808080",
+              borderColor: PALETTE.phElevated,
               style: {
-                color: textColor,
-                background: "#808080",
+                color: "#ffffff",
+                background: PALETTE.phElevated,
                 fontSize: "9px",
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 600
@@ -169,14 +179,14 @@ function updateChartTheme(theme) {
           },
           {
             y: 10.0,
-            borderColor: primaryColor,
+            borderColor: PALETTE.phDanger,
             strokeDashArray: 4,
             borderWidth: 1.5,
             label: {
-              borderColor: primaryColor,
+              borderColor: PALETTE.phDanger,
               style: {
-                color: textColor,
-                background: primaryColor,
+                color: "#ffffff",
+                background: PALETTE.phDanger,
                 fontSize: "9px",
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 600
@@ -195,7 +205,7 @@ function updateChartTheme(theme) {
     {
       theme: { mode: themeMode },
       grid: { borderColor: gridColor },
-      colors: [primaryColor, midColor],
+      colors: [PALETTE.sensorPrimary, PALETTE.sensorVerif],
       tooltip: { theme: themeMode },
       legend: { show: false },
       yaxis: {
@@ -206,7 +216,7 @@ function updateChartTheme(theme) {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-mono fill-[#808080]"
+            cssClass: "text-[10px] font-mono fill-slate-500 dark:fill-zinc-400"
           },
           formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
         }
@@ -220,7 +230,7 @@ function updateChartTheme(theme) {
     {
       theme: { mode: themeMode },
       grid: { borderColor: gridColor },
-      colors: [midColor, primaryColor],
+      colors: [PALETTE.doseRequested, PALETTE.doseActual],
       tooltip: { theme: themeMode },
       yaxis: {
         min: 0,
@@ -230,7 +240,7 @@ function updateChartTheme(theme) {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-mono fill-[#808080]"
+            cssClass: "text-[10px] font-mono fill-slate-500 dark:fill-zinc-400"
           },
           formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
         }
@@ -239,14 +249,14 @@ function updateChartTheme(theme) {
         yaxis: [
           {
             y: 150,
-            borderColor: isDark ? "#ffffff" : "#000000",
+            borderColor: PALETTE.doseCeiling,
             strokeDashArray: 4,
             borderWidth: 1.5,
             label: {
-              borderColor: isDark ? "#ffffff" : "#000000",
+              borderColor: PALETTE.doseCeiling,
               style: {
-                color: textColor,
-                background: isDark ? "#ffffff" : "#000000",
+                color: "#ffffff",
+                background: PALETTE.doseCeiling,
                 fontSize: "9px",
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 600
@@ -263,7 +273,7 @@ function updateChartTheme(theme) {
 }
 
 /**
- * ApexCharts Initialization (Pure Monochrome Design)
+ * ApexCharts Initialization (Vibrant Color Palette on Clean White Background)
  */
 function initCharts() {
   if (typeof ApexCharts === "undefined") {
@@ -272,10 +282,7 @@ function initCharts() {
   }
 
   const isDark = document.documentElement.classList.contains("dark");
-  const gridColor = isDark ? "#404040" : "#c0c0c0";
-  const primaryColor = isDark ? "#ffffff" : "#000000";
-  const midColor = isDark ? "#c0c0c0" : "#808080";
-  const textColor = isDark ? "#000000" : "#ffffff";
+  const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
 
   // 1. Finished Water pH Chart
   const phContainer = document.getElementById("ph-chart-container");
@@ -285,7 +292,7 @@ function initCharts() {
         height: "100%",
         type: "area",
         fontFamily: "'Inter', sans-serif",
-        foreColor: isDark ? "#c0c0c0" : "#404040",
+        foreColor: isDark ? "#94a3b8" : "#64748b",
         dropShadow: { enabled: false },
         toolbar: { show: false },
         animations: { enabled: false }
@@ -293,8 +300,8 @@ function initCharts() {
       theme: { mode: isDark ? "dark" : "light" },
       markers: {
         size: 0,
-        colors: [primaryColor],
-        strokeColors: isDark ? "#000000" : "#ffffff",
+        colors: [PALETTE.phLine],
+        strokeColors: isDark ? "#0f172a" : "#ffffff",
         strokeWidth: 2,
         hover: { size: 4 }
       },
@@ -307,8 +314,13 @@ function initCharts() {
         }
       },
       fill: {
-        type: "solid",
-        opacity: 0.05
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.35,
+          opacityTo: 0.05,
+          stops: [0, 90, 100]
+        }
       },
       dataLabels: { enabled: false },
       stroke: {
@@ -321,7 +333,7 @@ function initCharts() {
         borderColor: gridColor,
         padding: { left: 14, right: 36, top: 18, bottom: 8 }
       },
-      colors: [primaryColor],
+      colors: [PALETTE.phLine],
       series: [
         {
           name: "Finished Water pH",
@@ -338,7 +350,7 @@ function initCharts() {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-mono fill-[#808080]"
+            cssClass: "text-[10px] font-mono fill-slate-500 dark:fill-zinc-400"
           }
         },
         axisBorder: { show: false },
@@ -353,7 +365,7 @@ function initCharts() {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-mono fill-[#808080]"
+            cssClass: "text-[10px] font-mono fill-slate-500 dark:fill-zinc-400"
           },
           formatter: (val) => (val !== undefined && val !== null ? val.toFixed(1) : "")
         }
@@ -362,14 +374,14 @@ function initCharts() {
         yaxis: [
           {
             y: 8.5,
-            borderColor: "#808080",
+            borderColor: PALETTE.phElevated,
             strokeDashArray: 4,
             borderWidth: 1.5,
             label: {
-              borderColor: "#808080",
+              borderColor: PALETTE.phElevated,
               style: {
-                color: textColor,
-                background: "#808080",
+                color: "#ffffff",
+                background: PALETTE.phElevated,
                 fontSize: "9px",
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 600
@@ -379,14 +391,14 @@ function initCharts() {
           },
           {
             y: 10.0,
-            borderColor: primaryColor,
+            borderColor: PALETTE.phDanger,
             strokeDashArray: 4,
             borderWidth: 1.5,
             label: {
-              borderColor: primaryColor,
+              borderColor: PALETTE.phDanger,
               style: {
-                color: textColor,
-                background: primaryColor,
+                color: "#ffffff",
+                background: PALETTE.phDanger,
                 fontSize: "9px",
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 600
@@ -401,7 +413,7 @@ function initCharts() {
     phChart.render();
   }
 
-  // 2. Dual Sensor Channels Chart (Primary Solid, Verification Dashed)
+  // 2. Dual Sensor Channels Chart (Primary Red, Verification Green Dashed)
   const sensorContainer = document.getElementById("sensor-chart-container");
   if (sensorContainer) {
     const sensorOptions = {
@@ -409,7 +421,7 @@ function initCharts() {
         height: "100%",
         type: "line",
         fontFamily: "'Inter', sans-serif",
-        foreColor: isDark ? "#c0c0c0" : "#404040",
+        foreColor: isDark ? "#94a3b8" : "#64748b",
         dropShadow: { enabled: false },
         toolbar: { show: false },
         animations: { enabled: false }
@@ -417,8 +429,8 @@ function initCharts() {
       theme: { mode: isDark ? "dark" : "light" },
       markers: {
         size: 0,
-        colors: [primaryColor, midColor],
-        strokeColors: isDark ? "#000000" : "#ffffff",
+        colors: [PALETTE.sensorPrimary, PALETTE.sensorVerif],
+        strokeColors: isDark ? "#0f172a" : "#ffffff",
         strokeWidth: 2,
         hover: { size: 4 }
       },
@@ -436,7 +448,7 @@ function initCharts() {
         curve: "smooth",
         dashArray: [0, 4]
       },
-      colors: [primaryColor, midColor],
+      colors: [PALETTE.sensorPrimary, PALETTE.sensorVerif],
       series: [
         {
           name: "Primary Sensor (Attack Surface)",
@@ -457,7 +469,7 @@ function initCharts() {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-mono fill-[#808080]"
+            cssClass: "text-[10px] font-mono fill-slate-500 dark:fill-zinc-400"
           }
         },
         axisBorder: { show: false },
@@ -472,7 +484,7 @@ function initCharts() {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-mono fill-[#808080]"
+            cssClass: "text-[10px] font-mono fill-slate-500 dark:fill-zinc-400"
           },
           formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
         }
@@ -491,7 +503,7 @@ function initCharts() {
     sensorChart.render();
   }
 
-  // 3. Pump Actuator Dose Chart (Requested Dashed vs Actual Solid)
+  // 3. Pump Actuator Dose Chart (Requested Orange Dashed vs Actual Blue Solid)
   const doseContainer = document.getElementById("dose-chart-container");
   if (doseContainer) {
     const doseOptions = {
@@ -499,7 +511,7 @@ function initCharts() {
         height: "100%",
         type: "line",
         fontFamily: "'Inter', sans-serif",
-        foreColor: isDark ? "#c0c0c0" : "#404040",
+        foreColor: isDark ? "#94a3b8" : "#64748b",
         dropShadow: { enabled: false },
         toolbar: { show: false },
         animations: { enabled: false }
@@ -507,8 +519,8 @@ function initCharts() {
       theme: { mode: isDark ? "dark" : "light" },
       markers: {
         size: 0,
-        colors: [midColor, primaryColor],
-        strokeColors: isDark ? "#000000" : "#ffffff",
+        colors: [PALETTE.doseRequested, PALETTE.doseActual],
+        strokeColors: isDark ? "#0f172a" : "#ffffff",
         strokeWidth: 2,
         hover: { size: 4 }
       },
@@ -526,7 +538,7 @@ function initCharts() {
         curve: "smooth",
         dashArray: [5, 0]
       },
-      colors: [midColor, primaryColor],
+      colors: [PALETTE.doseRequested, PALETTE.doseActual],
       series: [
         {
           name: "Requested Dose (SCADA Command)",
@@ -547,7 +559,7 @@ function initCharts() {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-mono fill-[#808080]"
+            cssClass: "text-[10px] font-mono fill-slate-500 dark:fill-zinc-400"
           }
         },
         axisBorder: { show: false },
@@ -562,7 +574,7 @@ function initCharts() {
           style: {
             fontFamily: "'Inter', sans-serif",
             fontSize: "10px",
-            cssClass: "text-[10px] font-mono fill-[#808080]"
+            cssClass: "text-[10px] font-mono fill-slate-500 dark:fill-zinc-400"
           },
           formatter: (val) => (val >= 1000 ? `${(val / 1000).toFixed(0)}k` : `${val.toFixed(0)}`)
         }
@@ -580,14 +592,14 @@ function initCharts() {
         yaxis: [
           {
             y: 150,
-            borderColor: isDark ? "#ffffff" : "#000000",
+            borderColor: PALETTE.doseCeiling,
             strokeDashArray: 4,
             borderWidth: 1.5,
             label: {
-              borderColor: isDark ? "#ffffff" : "#000000",
+              borderColor: PALETTE.doseCeiling,
               style: {
-                color: textColor,
-                background: isDark ? "#ffffff" : "#000000",
+                color: "#ffffff",
+                background: PALETTE.doseCeiling,
                 fontSize: "9px",
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 600
@@ -833,18 +845,18 @@ function renderState(state) {
   const phEl = document.getElementById("stat-ph");
   if (phEl) {
     phEl.textContent = control.ph.toFixed(2);
-    phEl.className = `stat-value text-3xl font-extrabold tracking-tight text-[#000000] dark:text-[#ffffff] ph-${control.ph_band}`;
+    phEl.className = `stat-value text-2xl sm:text-3xl font-extrabold tracking-tight ph-${control.ph_band}`;
   }
 
   const phBadge = document.getElementById("ph-band-badge");
   if (phBadge) {
     phBadge.textContent = `${control.ph_band.toUpperCase()} BAND`;
     if (control.ph_band === "safe") {
-      phBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] text-[#000000] dark:text-[#ffffff] bg-[#ffffff] dark:bg-[#000000]";
+      phBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-emerald-200 text-emerald-700 bg-emerald-50 dark:border-emerald-800 dark:text-emerald-300 dark:bg-emerald-950/40";
     } else if (control.ph_band === "elevated") {
-      phBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff]";
+      phBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-amber-200 text-amber-700 bg-amber-50 dark:border-amber-800 dark:text-amber-300 dark:bg-amber-950/40";
     } else {
-      phBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#000000] dark:border-[#ffffff] bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000]";
+      phBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-rose-200 text-rose-700 bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:bg-rose-950/40";
     }
   }
 
@@ -856,10 +868,10 @@ function renderState(state) {
     const doseDiff = Math.abs(control.requested_dose_ppm - control.actual_dose_ppm);
     if (doseDiff > 50.0) {
       ghostBadge.textContent = `DIVERGENCE: +${doseDiff.toFixed(0)} PPM`;
-      ghostBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#000000] dark:border-[#ffffff] bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000]";
+      ghostBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300";
     } else {
       ghostBadge.textContent = "ALIGNED";
-      ghostBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]";
+      ghostBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:text-emerald-300 dark:bg-emerald-950/40";
     }
   }
 
@@ -871,8 +883,8 @@ function renderState(state) {
     divBadge.textContent = `DIV: ${divPct.toFixed(1)}%`;
     divBadge.className =
       divPct > 15.0
-        ? "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#000000] dark:border-[#ffffff] bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000]"
-        : "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]";
+        ? "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300"
+        : "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300";
   }
 
   // Cache for deltas
@@ -887,13 +899,10 @@ function renderState(state) {
   // 3. Update ApexCharts Telemetry Curves
   const history = state.history;
   const labels = history.time_labels || [];
-  const isDark = document.documentElement.classList.contains("dark");
-  const primaryColor = isDark ? "#ffffff" : "#000000";
-  const midColor = isDark ? "#c0c0c0" : "#808080";
 
   if (phChart) {
     phChart.updateSeries([{ name: "Finished Water pH", data: history.ph }], false);
-    phChart.updateOptions({ colors: [primaryColor], xaxis: { categories: labels, tickAmount: 8 } }, false, false);
+    phChart.updateOptions({ colors: [PALETTE.phLine], xaxis: { categories: labels, tickAmount: 8 } }, false, false);
   }
 
   if (sensorChart) {
@@ -914,7 +923,7 @@ function renderState(state) {
       currentSensorYMax = desiredSensorMax;
       sensorChart.updateOptions(
         {
-          colors: [primaryColor, midColor],
+          colors: [PALETTE.sensorPrimary, PALETTE.sensorVerif],
           yaxis: {
             min: 0,
             max: currentSensorYMax,
@@ -928,7 +937,7 @@ function renderState(state) {
         false
       );
     }
-    sensorChart.updateOptions({ colors: [primaryColor, midColor], xaxis: { categories: labels, tickAmount: 4 } }, false, false);
+    sensorChart.updateOptions({ colors: [PALETTE.sensorPrimary, PALETTE.sensorVerif], xaxis: { categories: labels, tickAmount: 4 } }, false, false);
   }
 
   if (doseChart) {
@@ -949,7 +958,7 @@ function renderState(state) {
       currentDoseYMax = desiredDoseMax;
       doseChart.updateOptions(
         {
-          colors: [midColor, primaryColor],
+          colors: [PALETTE.doseRequested, PALETTE.doseActual],
           yaxis: {
             min: 0,
             max: currentDoseYMax,
@@ -963,7 +972,7 @@ function renderState(state) {
         false
       );
     }
-    doseChart.updateOptions({ colors: [midColor, primaryColor], xaxis: { categories: labels, tickAmount: 4 } }, false, false);
+    doseChart.updateOptions({ colors: [PALETTE.doseRequested, PALETTE.doseActual], xaxis: { categories: labels, tickAmount: 4 } }, false, false);
   }
 
   // 4. Update SVG Topology Schematic
@@ -990,19 +999,36 @@ function updatePipelineSchematic(state) {
   const mutedColor = "#808080";
 
   const primSvg = document.getElementById("svg-text-primary");
-  if (primSvg) primSvg.textContent = `P: ${sensors.primary_ppm.toFixed(0)} ppm`;
+  if (primSvg) {
+    primSvg.textContent = `P: ${sensors.primary_ppm.toFixed(0)} ppm`;
+    primSvg.setAttribute("fill", isAttacking ? "#ef4444" : (isDark ? "#ffffff" : "#0f172a"));
+  }
 
   const verifSvg = document.getElementById("svg-text-verif");
-  if (verifSvg) verifSvg.textContent = `V: ${sensors.verification_ppm.toFixed(0)} ppm`;
+  if (verifSvg) {
+    verifSvg.textContent = `V: ${sensors.verification_ppm.toFixed(0)} ppm`;
+    verifSvg.setAttribute("fill", "#059669");
+  }
 
   const reqSvg = document.getElementById("svg-req-dose");
-  if (reqSvg) reqSvg.textContent = `Req: ${control.requested_dose_ppm.toFixed(0)} ppm`;
+  if (reqSvg) {
+    reqSvg.textContent = `Req: ${control.requested_dose_ppm.toFixed(0)} ppm`;
+    reqSvg.setAttribute("fill", "#f97316");
+  }
 
   const actSvg = document.getElementById("svg-act-dose");
-  if (actSvg) actSvg.textContent = `Act: ${control.actual_dose_ppm.toFixed(0)} ppm`;
+  if (actSvg) {
+    actSvg.textContent = `Act: ${control.actual_dose_ppm.toFixed(0)} ppm`;
+    actSvg.setAttribute("fill", "#0284c7");
+  }
 
   const tankSvg = document.getElementById("svg-tank-ph");
-  if (tankSvg) tankSvg.textContent = `${control.ph.toFixed(2)} pH`;
+  if (tankSvg) {
+    tankSvg.textContent = `${control.ph.toFixed(2)} pH`;
+    if (control.ph_band === "safe") tankSvg.setAttribute("fill", "#059669");
+    else if (control.ph_band === "elevated") tankSvg.setAttribute("fill", "#d97706");
+    else tankSvg.setAttribute("fill", "#dc2626");
+  }
 
   const attackBeam = document.getElementById("svg-attack-beam");
   const attackLabel = document.getElementById("svg-attack-label");
@@ -1010,17 +1036,17 @@ function updatePipelineSchematic(state) {
   if (isAttacking) {
     if (attackBeam) {
       attackBeam.setAttribute("opacity", "1");
-      attackBeam.setAttribute("stroke", primaryColor);
+      attackBeam.setAttribute("stroke", "#ef4444");
     }
     if (attackLabel) {
       attackLabel.setAttribute("opacity", "1");
-      attackLabel.setAttribute("fill", primaryColor);
+      attackLabel.setAttribute("fill", "#ef4444");
     }
-    if (nodeSensor) nodeSensor.setAttribute("stroke", primaryColor);
+    if (nodeSensor) nodeSensor.setAttribute("stroke", "#ef4444");
   } else {
     if (attackBeam) attackBeam.setAttribute("opacity", "0");
     if (attackLabel) attackLabel.setAttribute("opacity", "0");
-    if (nodeSensor) nodeSensor.setAttribute("stroke", mutedColor);
+    if (nodeSensor) nodeSensor.setAttribute("stroke", "#0284c7");
   }
 
   const shield = document.getElementById("svg-sis-shield");
@@ -1029,44 +1055,42 @@ function updatePipelineSchematic(state) {
 
   if (shield && shieldText && pipelineBadge) {
     if (!state.interlock_on) {
-      shield.querySelector("circle").setAttribute("stroke", mutedColor);
+      shield.querySelector("circle").setAttribute("stroke", "#f59e0b");
       shield.querySelector("circle").setAttribute("stroke-dasharray", "4 4");
-      shield.querySelector("path").setAttribute("fill", mutedColor);
+      shield.querySelector("path").setAttribute("fill", "#f59e0b");
       shieldText.textContent = "SIS BYPASSED";
-      shieldText.setAttribute("fill", mutedColor);
+      shieldText.setAttribute("fill", "#f59e0b");
       pipelineBadge.textContent = "SAFETY BYPASSED";
-      pipelineBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff]";
+      pipelineBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300";
     } else if (isBlocked) {
-      shield.querySelector("circle").setAttribute("stroke", primaryColor);
+      shield.querySelector("circle").setAttribute("stroke", "#ef4444");
       shield.querySelector("circle").setAttribute("stroke-dasharray", "");
-      shield.querySelector("path").setAttribute("fill", primaryColor);
+      shield.querySelector("path").setAttribute("fill", "#ef4444");
       shieldText.textContent = "SHIELD: DEFLECTED";
-      shieldText.setAttribute("fill", primaryColor);
+      shieldText.setAttribute("fill", "#ef4444");
       pipelineBadge.textContent = "DOSE BLOCKED BY SIS";
-      pipelineBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#000000] dark:border-[#ffffff] bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000]";
+      pipelineBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300";
     } else {
-      shield.querySelector("circle").setAttribute("stroke", mutedColor);
+      shield.querySelector("circle").setAttribute("stroke", "#10b981");
       shield.querySelector("circle").setAttribute("stroke-dasharray", "");
-      shield.querySelector("path").setAttribute("fill", mutedColor);
+      shield.querySelector("path").setAttribute("fill", "#10b981");
       shieldText.textContent = "SIS INTERLOCK";
-      shieldText.setAttribute("fill", primaryColor);
+      shieldText.setAttribute("fill", "#10b981");
       pipelineBadge.textContent = "SHIELD ACTIVE";
-      pipelineBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]";
+      pipelineBadge.className = "text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300";
     }
   }
 
   const pumpNode = document.getElementById("svg-node-pump");
   const tankNode = document.getElementById("svg-node-tank");
 
-  if (pumpNode && tankNode && tankSvg) {
+  if (pumpNode && tankNode) {
     if (isDanger || control.ph_band === "elevated") {
-      pumpNode.setAttribute("stroke", primaryColor);
-      tankNode.setAttribute("stroke", primaryColor);
-      tankSvg.setAttribute("fill", primaryColor);
+      pumpNode.setAttribute("stroke", "#ef4444");
+      tankNode.setAttribute("stroke", "#ef4444");
     } else {
-      pumpNode.setAttribute("stroke", mutedColor);
-      tankNode.setAttribute("stroke", mutedColor);
-      tankSvg.setAttribute("fill", primaryColor);
+      pumpNode.setAttribute("stroke", "#0284c7");
+      tankNode.setAttribute("stroke", "#0284c7");
     }
   }
 }
@@ -1124,7 +1148,7 @@ function updateStepperAndGates(state) {
       g1.className = "gate-badge badge-destructive";
     } else {
       g1.textContent = "MONITORING";
-      g1.className = "gate-badge badge-outline";
+      g1.className = "gate-badge badge-success";
     }
   }
 
@@ -1134,7 +1158,7 @@ function updateStepperAndGates(state) {
       g2.className = "gate-badge badge-destructive";
     } else {
       g2.textContent = "MONITORING";
-      g2.className = "gate-badge badge-outline";
+      g2.className = "gate-badge badge-success";
     }
   }
 
@@ -1144,13 +1168,13 @@ function updateStepperAndGates(state) {
       g3.className = "gate-badge badge-destructive";
     } else {
       g3.textContent = "MONITORING";
-      g3.className = "gate-badge badge-outline";
+      g3.className = "gate-badge badge-success";
     }
   }
 }
 
 /**
- * Status Pill & Block Glow (Monochrome High Contrast)
+ * Status Pill & Block Glow
  */
 function updateStatusPill(state) {
   const pill = document.getElementById("status-pill");
@@ -1162,7 +1186,7 @@ function updateStatusPill(state) {
     if (text) text.textContent = `CRITICAL DANGER: pH ${state.control.ph.toFixed(2)}`;
     if (sideStatus) {
       sideStatus.textContent = "HAZARD TRIP";
-      sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-[#000000] dark:border-[#ffffff] bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000]";
+      sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300";
     }
     triggerBlockGlow();
   } else if (state.system_status === "BLOCKED") {
@@ -1171,7 +1195,7 @@ function updateStatusPill(state) {
     if (text) text.textContent = `BLOCKED: ${gateName}`;
     if (sideStatus) {
       sideStatus.textContent = "DOSE BLOCKED";
-      sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-[#000000] dark:border-[#ffffff] bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000]";
+      sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300";
     }
     triggerBlockGlow();
   } else {
@@ -1179,7 +1203,7 @@ function updateStatusPill(state) {
     if (text) text.textContent = "NOMINAL OPERATION";
     if (sideStatus) {
       sideStatus.textContent = "OPTIMAL";
-      sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]";
+      sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300";
     }
   }
 }
@@ -1197,10 +1221,10 @@ function updateInterlockBadge(isEnabled) {
   if (!badge) return;
   if (isEnabled) {
     badge.textContent = "ENGAGED";
-    badge.className = "ml-1 text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border border-[#000000] dark:border-[#ffffff] bg-[#000000] text-[#ffffff] dark:bg-[#ffffff] dark:text-[#000000]";
+    badge.className = "ml-1 text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300";
   } else {
     badge.textContent = "BYPASSED";
-    badge.className = "ml-1 text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border border-[#808080] bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff]";
+    badge.className = "ml-1 text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300";
   }
 }
 
@@ -1222,13 +1246,13 @@ function updateDelta(elemId, current, previous, unit, decimals = 1) {
   const diff = current - previous;
   if (Math.abs(diff) < 0.001) {
     el.textContent = "■ 0.0";
-    el.className = "mono text-[11px] text-[#808080]";
+    el.className = "mono text-[11px] text-slate-400 dark:text-slate-500";
   } else if (diff > 0) {
     el.textContent = `▲ +${diff.toFixed(decimals)}`;
-    el.className = "mono text-[11px] font-bold text-[#000000] dark:text-[#ffffff]";
+    el.className = "mono text-[11px] font-bold text-emerald-600 dark:text-emerald-400";
   } else {
     el.textContent = `▼ ${diff.toFixed(decimals)}`;
-    el.className = "mono text-[11px] font-bold text-[#404040] dark:text-[#c0c0c0]";
+    el.className = "mono text-[11px] font-bold text-rose-600 dark:text-rose-400";
   }
 }
 
@@ -1256,7 +1280,7 @@ function updateEventLog(events) {
 
     let badgeClass = "badge-secondary";
     if (ev.type === "BLOCKED") badgeClass = "badge-destructive";
-    else if (ev.type === "ALLOWED") badgeClass = "badge-outline";
+    else if (ev.type === "ALLOWED") badgeClass = "badge-success";
     else if (ev.type === "ATTACK") badgeClass = "badge-warning";
 
     item.innerHTML = `
@@ -1265,7 +1289,7 @@ function updateEventLog(events) {
         <span class="event-time mono">${ev.time_str}</span>
       </div>
       <div class="event-msg"><b>${escapeHtml(ev.message)}</b></div>
-      <div class="text-[10px] text-[#404040] dark:text-[#c0c0c0]">${escapeHtml(ev.detail)}</div>
+      <div class="text-[10px] text-slate-500 dark:text-zinc-400">${escapeHtml(ev.detail)}</div>
     `;
 
     container.insertBefore(item, container.firstChild);
@@ -1303,7 +1327,7 @@ async function loadAuditTrail() {
     const runsRes = await fetch("/runs");
     const runs = await runsRes.json();
     if (!runs || !runs.length) {
-      tbody.innerHTML = `<tr><td colspan="11" class="text-center p-8 text-[#808080]">No audit records found in SQLite sink.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="11" class="text-center p-8 text-slate-400">No audit records found in SQLite sink.</td></tr>`;
       return;
     }
 
@@ -1314,7 +1338,7 @@ async function loadAuditTrail() {
 
     renderAuditTable();
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="11" class="text-center text-[#000000] dark:text-[#ffffff] p-8">Failed to load audit records: ${err}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" class="text-center text-slate-700 dark:text-zinc-200 p-8">Failed to load audit records: ${err}</td></tr>`;
   }
 }
 
@@ -1343,7 +1367,7 @@ function renderAuditTable() {
   }
 
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="11" class="text-center p-8 text-[#808080]">No matching audit records.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" class="text-center p-8 text-slate-400">No matching audit records.</td></tr>`;
     return;
   }
 
@@ -1352,22 +1376,22 @@ function renderAuditTable() {
     .reverse()
     .map(
       (r) => `
-    <tr class="hover:bg-[#c0c0c0]/30 dark:hover:bg-[#404040]/30 transition">
-      <td class="px-3 py-2 font-mono text-[#808080]">${r.iso_time.split(" ")[1] || r.iso_time}</td>
-      <td class="px-3 py-2 font-mono font-bold text-[#000000] dark:text-[#ffffff]">${r.run_id.slice(-6)}</td>
+    <tr class="hover:bg-slate-50 dark:hover:bg-zinc-800/40 transition">
+      <td class="px-3 py-2 font-mono text-slate-500 dark:text-zinc-400">${r.iso_time.split(" ")[1] || r.iso_time}</td>
+      <td class="px-3 py-2 font-mono font-bold text-slate-900 dark:text-white">${r.run_id.slice(-6)}</td>
       <td class="px-3 py-2">
-        <span class="badge ${r.decision === "BLOCKED" ? "badge-destructive" : "badge-outline"} font-mono">
+        <span class="badge ${r.decision === "BLOCKED" ? "badge-destructive" : "badge-success"} font-mono">
           ${r.decision}
         </span>
       </td>
-      <td class="px-3 py-2 font-mono font-bold text-[#404040] dark:text-[#c0c0c0]">${r.requested_dose.toFixed(1)}</td>
-      <td class="px-3 py-2 font-mono font-bold text-[#000000] dark:text-[#ffffff]">${r.actual_dose.toFixed(1)}</td>
-      <td class="px-3 py-2 font-mono text-[#404040] dark:text-[#c0c0c0]">${r.resulting_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono font-bold text-orange-600 dark:text-orange-400">${r.requested_dose.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono font-bold text-sky-600 dark:text-sky-400">${r.actual_dose.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-slate-700 dark:text-zinc-300">${r.resulting_ppm.toFixed(1)}</td>
       <td class="px-3 py-2 font-mono font-bold ${r.ph > 10 ? "ph-danger" : r.ph > 8.5 ? "ph-elevated" : "ph-safe"}">${r.ph.toFixed(2)}</td>
-      <td class="px-3 py-2 font-mono text-[#808080]">${r.primary_ppm.toFixed(1)}</td>
-      <td class="px-3 py-2 font-mono text-[#808080]">${r.verification_ppm.toFixed(1)}</td>
-      <td class="px-3 py-2 font-mono text-[#808080]">${r.flow.toFixed(1)}</td>
-      <td class="px-3 py-2 text-[11px] text-[#404040] dark:text-[#c0c0c0] max-w-[240px] truncate" title="${escapeHtml(r.reason)}">
+      <td class="px-3 py-2 font-mono text-slate-600 dark:text-zinc-400">${r.primary_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-slate-600 dark:text-zinc-400">${r.verification_ppm.toFixed(1)}</td>
+      <td class="px-3 py-2 font-mono text-slate-600 dark:text-zinc-400">${r.flow.toFixed(1)}</td>
+      <td class="px-3 py-2 text-[11px] text-slate-600 dark:text-zinc-400 max-w-[240px] truncate" title="${escapeHtml(r.reason)}">
         ${escapeHtml(r.reason)}
       </td>
     </tr>
