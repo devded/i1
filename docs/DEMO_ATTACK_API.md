@@ -122,6 +122,14 @@ curl -s http://127.0.0.1:8000/state | jq '.last_decision'
   ```
 - **Auditing:** Every rejected pulse is recorded to the write-only SQLite audit database.
 
+**How the trigger works / how it resolves the attack:**
+1. The attack spoofs the primary sensor to 11,100 ppm (the requested dose SCADA now believes is correct).
+2. Every requested dose passes through the interlock *before* it reaches the pump actuator — SCADA cannot write to the pump directly.
+3. The interlock projects the resulting finished-water concentration from that requested value (`ppm = mass / flow`), not the raw sensor reading, and checks it against gate 1's 150 ppm hard ceiling (gates 2 and 3 — slew rate and dual-channel cross-check — are evaluated the same way for the other attack vectors).
+4. 11,100 ppm exceeds 150 ppm, so gate 1 trips `HARD_BOUND` and the command is rejected outright.
+5. Instead of forwarding the bad command, the actuator holds the last known-safe setpoint (100 ppm) — the pump physically never moves.
+6. The decision (`BLOCKED`, reason, `gate_tripped`) is written to the audit sink regardless of outcome, so there's a forensic record even though the command never took effect.
+
 ---
 
 ## 4. Demonstrating Defense-in-Depth (The Other 3 Vectors)
