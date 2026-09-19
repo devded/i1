@@ -1,11 +1,11 @@
-# Oldsmar SCADA Chemical Dosing Safety Interlock Demo
+# AquaLock SIS — Cyber-Physical Water Treatment Safety Interlock
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat&logo=FastAPI&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python 3.14](https://img.shields.io/badge/Python-3.14+-blue.svg)](https://www.python.org/)
 [![Safety Standard](https://img.shields.io/badge/Standard-IEC%2061511%20%2F%20ISA--84-orange.svg)]()
-[![Design System](https://img.shields.io/badge/UI-shadcn%2Fui%20Dark%20Tokens-black.svg)]()
+[![Design System](https://img.shields.io/badge/UI-Monochrome%20Industrial-black.svg)]()
 
-A high-fidelity cyber-physical demonstration system showing how a water treatment plant chemical dosing safety interlock defends against SCADA sensor tampering attacks. Inspired by the **February 2021 Oldsmar, Florida water treatment plant cyberattack**, in which remote adversaries manipulated sodium hydroxide (NaOH / lye) dosing from ~100 ppm to a caustic ~11,100 ppm.
+**AquaLock SIS** is a high-fidelity cyber-physical demonstration system showing how an out-of-band water treatment safety instrumented system (SIS) defends against SCADA sensor tampering and lethal chemical overdosing attacks. Inspired by the **February 2021 Oldsmar, Florida water treatment plant cyberattack**, in which remote adversaries manipulated sodium hydroxide (NaOH / lye) dosing from ~100 ppm to a caustic ~11,100 ppm.
 
 ---
 

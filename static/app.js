@@ -35,6 +35,7 @@ let currentAuditSearch = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
+  initSidebarToggle();
   initCharts();
   bindSidebarTabs();
   bindUIEvents();
@@ -43,6 +44,60 @@ document.addEventListener("DOMContentLoaded", () => {
   startTelemetryPolling();
   loadAuditTrail();
 });
+
+/**
+ * Sidebar Collapse / Extend Management
+ */
+function initSidebarToggle() {
+  const sidebar = document.getElementById("sidebar");
+  const toggleBtn = document.getElementById("btn-sidebar-toggle");
+  if (!sidebar || !toggleBtn) return;
+
+  const urlSidebar = new URLSearchParams(window.location.search).get("sidebar");
+  const savedMinimized = urlSidebar === "minimized" || localStorage.getItem("scada_sidebar_minimized") === "true";
+  if (savedMinimized) {
+    applySidebarState(true);
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    const isMinimized = sidebar.classList.contains("minimized");
+    const nextState = !isMinimized;
+    applySidebarState(nextState);
+    localStorage.setItem("scada_sidebar_minimized", nextState ? "true" : "false");
+  });
+}
+
+function applySidebarState(isMinimized) {
+  const sidebar = document.getElementById("sidebar");
+  const toggleBtn = document.getElementById("btn-sidebar-toggle");
+  const icon = document.getElementById("sidebar-toggle-icon");
+  if (!sidebar) return;
+
+  if (isMinimized) {
+    sidebar.classList.add("minimized");
+    if (icon) icon.setAttribute("data-lucide", "panel-left-open");
+    if (toggleBtn) {
+      toggleBtn.setAttribute("title", "Extend Sidebar");
+      toggleBtn.setAttribute("aria-label", "Extend Sidebar");
+    }
+  } else {
+    sidebar.classList.remove("minimized");
+    if (icon) icon.setAttribute("data-lucide", "panel-left-close");
+    if (toggleBtn) {
+      toggleBtn.setAttribute("title", "Minimize Sidebar");
+      toggleBtn.setAttribute("aria-label", "Minimize Sidebar");
+    }
+  }
+
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+
+  // Trigger window resize event after transition completes so ApexCharts adapts to new dimensions
+  setTimeout(() => {
+    window.dispatchEvent(new Event("resize"));
+  }, 260);
+}
 
 /**
  * Theme Management (Default: Clean White Background)
@@ -230,9 +285,18 @@ function initCharts() {
         height: "100%",
         type: "area",
         fontFamily: "'Inter', sans-serif",
+        foreColor: isDark ? "#c0c0c0" : "#404040",
         dropShadow: { enabled: false },
         toolbar: { show: false },
         animations: { enabled: false }
+      },
+      theme: { mode: isDark ? "dark" : "light" },
+      markers: {
+        size: 0,
+        colors: [primaryColor],
+        strokeColors: isDark ? "#000000" : "#ffffff",
+        strokeWidth: 2,
+        hover: { size: 4 }
       },
       tooltip: {
         enabled: true,
@@ -345,9 +409,18 @@ function initCharts() {
         height: "100%",
         type: "line",
         fontFamily: "'Inter', sans-serif",
+        foreColor: isDark ? "#c0c0c0" : "#404040",
         dropShadow: { enabled: false },
         toolbar: { show: false },
         animations: { enabled: false }
+      },
+      theme: { mode: isDark ? "dark" : "light" },
+      markers: {
+        size: 0,
+        colors: [primaryColor, midColor],
+        strokeColors: isDark ? "#000000" : "#ffffff",
+        strokeWidth: 2,
+        hover: { size: 4 }
       },
       tooltip: {
         enabled: true,
@@ -426,9 +499,18 @@ function initCharts() {
         height: "100%",
         type: "line",
         fontFamily: "'Inter', sans-serif",
+        foreColor: isDark ? "#c0c0c0" : "#404040",
         dropShadow: { enabled: false },
         toolbar: { show: false },
         animations: { enabled: false }
+      },
+      theme: { mode: isDark ? "dark" : "light" },
+      markers: {
+        size: 0,
+        colors: [midColor, primaryColor],
+        strokeColors: isDark ? "#000000" : "#ffffff",
+        strokeWidth: 2,
+        hover: { size: 4 }
       },
       tooltip: {
         enabled: true,
@@ -805,27 +887,34 @@ function renderState(state) {
   // 3. Update ApexCharts Telemetry Curves
   const history = state.history;
   const labels = history.time_labels || [];
+  const isDark = document.documentElement.classList.contains("dark");
+  const primaryColor = isDark ? "#ffffff" : "#000000";
+  const midColor = isDark ? "#c0c0c0" : "#808080";
 
   if (phChart) {
     phChart.updateSeries([{ name: "Finished Water pH", data: history.ph }], false);
-    phChart.updateOptions({ xaxis: { categories: labels, tickAmount: 8 } }, false, false);
+    phChart.updateOptions({ colors: [primaryColor], xaxis: { categories: labels, tickAmount: 8 } }, false, false);
   }
 
   if (sensorChart) {
+    const primData = history.primary || [];
+    const verifData = history.verification || [];
+
     sensorChart.updateSeries(
       [
-        { name: "Primary Sensor (Attack Surface)", data: history.primary_sensor },
-        { name: "Independent Verification Channel", data: history.verification_sensor }
+        { name: "Primary Sensor (Attack Surface)", data: primData },
+        { name: "Independent Verification Channel", data: verifData }
       ],
       false
     );
 
-    const maxSensor = Math.max(...history.primary_sensor, ...history.verification_sensor, 100);
+    const maxSensor = Math.max(...primData, ...verifData, 100);
     const desiredSensorMax = maxSensor > 240 ? 12000 : 250;
     if (desiredSensorMax !== currentSensorYMax) {
       currentSensorYMax = desiredSensorMax;
       sensorChart.updateOptions(
         {
+          colors: [primaryColor, midColor],
           yaxis: {
             min: 0,
             max: currentSensorYMax,
@@ -839,24 +928,28 @@ function renderState(state) {
         false
       );
     }
-    sensorChart.updateOptions({ xaxis: { categories: labels, tickAmount: 4 } }, false, false);
+    sensorChart.updateOptions({ colors: [primaryColor, midColor], xaxis: { categories: labels, tickAmount: 4 } }, false, false);
   }
 
   if (doseChart) {
+    const reqData = history.requested_dose || [];
+    const actData = history.actual_dose || [];
+
     doseChart.updateSeries(
       [
-        { name: "Requested Dose (SCADA Command)", data: history.requested_dose },
-        { name: "Actual Actuator Dose", data: history.actual_dose }
+        { name: "Requested Dose (SCADA Command)", data: reqData },
+        { name: "Actual Actuator Dose", data: actData }
       ],
       false
     );
 
-    const maxDose = Math.max(...history.requested_dose, ...history.actual_dose, 100);
+    const maxDose = Math.max(...reqData, ...actData, 100);
     const desiredDoseMax = maxDose > 240 ? 12000 : 250;
     if (desiredDoseMax !== currentDoseYMax) {
       currentDoseYMax = desiredDoseMax;
       doseChart.updateOptions(
         {
+          colors: [midColor, primaryColor],
           yaxis: {
             min: 0,
             max: currentDoseYMax,
@@ -870,7 +963,7 @@ function renderState(state) {
         false
       );
     }
-    doseChart.updateOptions({ xaxis: { categories: labels, tickAmount: 4 } }, false, false);
+    doseChart.updateOptions({ colors: [midColor, primaryColor], xaxis: { categories: labels, tickAmount: 4 } }, false, false);
   }
 
   // 4. Update SVG Topology Schematic
@@ -1064,28 +1157,26 @@ function updateStatusPill(state) {
   const text = document.getElementById("status-text");
   const sideStatus = document.getElementById("sidebar-status-text");
 
-  if (!pill || !text) return;
-
   if (state.system_status === "DANGER") {
-    pill.className = "status-pill tripped";
-    text.textContent = `CRITICAL DANGER: pH ${state.control.ph.toFixed(2)}`;
+    if (pill) pill.className = "status-pill tripped";
+    if (text) text.textContent = `CRITICAL DANGER: pH ${state.control.ph.toFixed(2)}`;
     if (sideStatus) {
       sideStatus.textContent = "HAZARD TRIP";
       sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-[#000000] dark:border-[#ffffff] bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000]";
     }
     triggerBlockGlow();
   } else if (state.system_status === "BLOCKED") {
-    pill.className = "status-pill tripped";
+    if (pill) pill.className = "status-pill tripped";
     const gateName = state.last_decision ? state.last_decision.reason.split(":")[0] : "DOSE BLOCKED";
-    text.textContent = `BLOCKED: ${gateName}`;
+    if (text) text.textContent = `BLOCKED: ${gateName}`;
     if (sideStatus) {
       sideStatus.textContent = "DOSE BLOCKED";
       sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-[#000000] dark:border-[#ffffff] bg-[#000000] dark:bg-[#ffffff] text-[#ffffff] dark:text-[#000000]";
     }
     triggerBlockGlow();
   } else {
-    pill.className = "status-pill nominal";
-    text.textContent = "NOMINAL OPERATION";
+    if (pill) pill.className = "status-pill nominal";
+    if (text) text.textContent = "NOMINAL OPERATION";
     if (sideStatus) {
       sideStatus.textContent = "OPTIMAL";
       sideStatus.className = "text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border border-[#808080] bg-[#ffffff] dark:bg-[#000000] text-[#000000] dark:text-[#ffffff]";

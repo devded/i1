@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oldsmar SCADA Chemical Dosing Safety Interlock — IEC 61511 Console</title>
+  <title>AquaLock SIS — IEC 61511 Water Safety Interlock</title>
   
   <!-- Inter & JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,9 +101,7 @@
               400: '#808080',
               500: '#404040',
               600: '#000000',
-              700: '#000000',
-              800: '#000000',
-              950: '#000000'
+              700: '#000000'
             },
             amber: {
               50: '#ffffff',
@@ -113,9 +111,17 @@
               400: '#808080',
               500: '#404040',
               600: '#000000',
-              700: '#000000',
-              800: '#000000',
-              950: '#000000'
+              700: '#000000'
+            },
+            orange: {
+              50: '#ffffff',
+              100: '#c0c0c0',
+              200: '#c0c0c0',
+              300: '#808080',
+              400: '#808080',
+              500: '#404040',
+              600: '#000000',
+              700: '#000000'
             },
             rose: {
               500: '#404040',
@@ -158,72 +164,81 @@
   <script src="/static/lucide.min.js"></script>
 
   <!-- Custom CSS extensions -->
-  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/styles.css?v=mono_strict">
 </head>
 <body class="bg-[#ffffff] text-[#000000] dark:bg-[#000000] dark:text-[#ffffff] flex h-screen w-screen overflow-hidden antialiased font-sans select-none">
 
   <div class="flex h-screen w-screen overflow-hidden">
     
     <!-- LEFT SIDEBAR (Monochrome Industrial Navigation) -->
-    <aside class="w-64 min-w-[16rem] bg-[#ffffff] dark:bg-[#000000] border-r border-[#c0c0c0] dark:border-[#404040] flex flex-col justify-between p-3.5 z-20 transition-colors shadow-xs">
+    <aside id="sidebar" class="w-[17rem] min-w-[17rem] bg-[#ffffff] dark:bg-[#000000] border-r border-[#c0c0c0] dark:border-[#404040] flex flex-col justify-between p-3 z-20 shadow-xs select-none">
       <div>
         <!-- Brand Header -->
-        <div class="flex items-center gap-3 px-1.5 pb-3.5 border-b border-[#c0c0c0] dark:border-[#404040]">
-          <div class="w-9 h-9 rounded-lg bg-[#000000] dark:bg-[#ffffff] flex items-center justify-center text-[#ffffff] dark:text-[#000000] shadow-xs flex-shrink-0">
-            <i data-lucide="shield-check" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <div class="text-sm font-bold tracking-tight text-[#000000] dark:text-[#ffffff] leading-tight">OLDSMAR SCADA</div>
-              <span class="text-[9px] font-semibold font-mono px-1 py-0.2 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff] bg-[#ffffff] dark:bg-[#000000]">SIS</span>
+        <div class="sidebar-header flex items-center justify-between pb-3 border-b border-[#c0c0c0] dark:border-[#404040] gap-1">
+          <div class="sidebar-brand-group flex items-center gap-2 min-w-0">
+            <div class="w-7 h-7 rounded-lg bg-[#000000] dark:bg-[#ffffff] flex items-center justify-center text-[#ffffff] dark:text-[#000000] shadow-xs flex-shrink-0">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
             </div>
-            <div class="text-[11px] font-medium text-[#404040] dark:text-[#c0c0c0]">IEC 61511 Safety Interlock</div>
+            <div class="sidebar-label min-w-0">
+              <div class="flex items-center gap-1.5">
+                <div class="text-xs font-bold tracking-tight text-[#000000] dark:text-[#ffffff] leading-tight whitespace-nowrap">AQUALOCK</div>
+                <span class="text-[9px] font-semibold font-mono px-1 py-0.2 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff] bg-[#ffffff] dark:bg-[#000000]">SIS</span>
+              </div>
+              <div class="text-[10px] font-medium text-[#404040] dark:text-[#c0c0c0] truncate">IEC 61511 Safety Interlock</div>
+            </div>
+          </div>
+
+          <!-- Action: Sidebar Collapse/Extend Toggle -->
+          <div class="sidebar-action-group flex items-center gap-1 flex-shrink-0">
+            <button id="btn-sidebar-toggle" class="p-1.5 rounded-lg border border-[#c0c0c0] dark:border-[#404040] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition shadow-xs flex-shrink-0" title="Minimize Sidebar" aria-label="Toggle Sidebar">
+              <i id="sidebar-toggle-icon" data-lucide="panel-left-close" class="w-3.5 h-3.5"></i>
+            </button>
           </div>
         </div>
 
         <!-- Navigation Links -->
         <nav class="mt-4 flex flex-col gap-1">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-[#808080] px-2 py-1">
+          <div class="sidebar-label text-[10px] font-semibold uppercase tracking-wider text-[#808080] px-2 py-1">
             Operations & Defense
           </div>
           
-          <button class="nav-item active w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="overview">
-            <i data-lucide="layout-dashboard" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
-            <span>Live Telemetry</span>
+          <button class="nav-item active w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="overview" title="Live Telemetry">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 text-[#000000] dark:text-[#ffffff] flex-shrink-0"></i>
+            <span class="sidebar-label">Live Telemetry</span>
           </button>
 
-          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="attack-studio">
-            <i data-lucide="crosshair" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
-            <span>Attack Studio</span>
-            <span class="ml-auto text-[9px] font-bold font-mono border border-[#808080] bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff] px-1.5 py-0.5 rounded">EXPLOITS</span>
+          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="attack-studio" title="Attack Studio">
+            <i data-lucide="crosshair" class="w-4 h-4 text-[#000000] dark:text-[#ffffff] flex-shrink-0"></i>
+            <span class="sidebar-label">Attack Studio</span>
+            <span class="sidebar-label ml-auto text-[9px] font-bold font-mono border border-[#808080] bg-[#c0c0c0] dark:bg-[#404040] text-[#000000] dark:text-[#ffffff] px-1.5 py-0.5 rounded">EXPLOITS</span>
           </button>
 
-          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="safety-gates">
-            <i data-lucide="shield-alert" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
-            <span>Safety Interlock Gates</span>
+          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="safety-gates" title="Safety Interlock Gates">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-[#000000] dark:text-[#ffffff] flex-shrink-0"></i>
+            <span class="sidebar-label">Safety Interlock Gates</span>
           </button>
 
-          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="audit-trail">
-            <i data-lucide="database" class="w-4 h-4 text-[#000000] dark:text-[#ffffff]"></i>
-            <span>SQLite Audit Trail</span>
+          <button class="nav-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#000000] dark:text-[#ffffff] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] transition text-left" data-tab="audit-trail" title="SQLite Audit Trail">
+            <i data-lucide="database" class="w-4 h-4 text-[#000000] dark:text-[#ffffff] flex-shrink-0"></i>
+            <span class="sidebar-label">SQLite Audit Trail</span>
           </button>
         </nav>
 
         <!-- HARDWARE INTERLOCK PHYSICAL KEY CONTROL -->
-        <div class="flex flex-col gap-1.5 pt-2.5 border-t border-[#c0c0c0] dark:border-[#404040]">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-[#808080] px-2">
+        <div class="flex flex-col gap-1.5 pt-2.5 border-t border-[#c0c0c0] dark:border-[#404040] mt-3">
+          <div class="sidebar-label text-[10px] font-semibold uppercase tracking-wider text-[#808080] px-2">
             Safety Control
           </div>
-          <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-2.5 shadow-xs flex flex-col gap-2" title="IEC 61511 Physical Key Switch Stand-In">
+          <div class="sidebar-interlock-card bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-xl p-2.5 shadow-xs flex flex-col gap-2" title="IEC 61511 Physical Key Switch Stand-In">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-1.5 text-xs font-bold text-[#000000] dark:text-[#ffffff]">
-                <i data-lucide="key-round" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff]"></i>
-                <span class="text-[11px] tracking-tight">HARDWARE INTERLOCK</span>
+                <i data-lucide="key-round" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff] flex-shrink-0"></i>
+                <span class="sidebar-label text-[11px] tracking-tight">HARDWARE INTERLOCK</span>
               </div>
-              <span id="interlock-badge" class="ml-1 text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border border-[#000000] dark:border-[#ffffff] bg-[#000000] text-[#ffffff] dark:bg-[#ffffff] dark:text-[#000000]">ENGAGED</span>
+              <span id="interlock-badge" class="sidebar-label ml-1 text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border border-[#000000] dark:border-[#ffffff] bg-[#000000] text-[#ffffff] dark:bg-[#ffffff] dark:text-[#000000]">ENGAGED</span>
             </div>
-            <div class="flex items-center justify-between pt-1.5 border-t border-[#c0c0c0] dark:border-[#404040]">
-              <span class="text-[9px] text-[#808080] font-mono">IEC 61511 Key Switch</span>
+            <div class="sidebar-interlock-row flex items-center justify-between pt-1.5 border-t border-[#c0c0c0] dark:border-[#404040]">
+              <span class="sidebar-label text-[9px] text-[#808080] font-mono">IEC 61511 Key Switch</span>
               <label class="flowbite-toggle" title="Toggle SIS Safety Interlock">
                 <input type="checkbox" id="interlock-toggle" checked aria-label="Toggle SIS Safety Interlock">
                 <span class="toggle-track">
@@ -236,21 +251,21 @@
       </div>
 
       <!-- Sidebar Footer (Plant Diagnostics & System Controls) -->
-      <div class="border-t border-[#c0c0c0] dark:border-[#404040] pt-3 px-1 flex flex-col gap-2 mt-auto">
-        <div class="bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-lg p-2.5 flex flex-col gap-2 shadow-xs">
+      <div class="border-t border-[#c0c0c0] dark:border-[#404040] pt-3 px-1 flex flex-col gap-2 mt-auto sidebar-footer">
+        <div class="sidebar-telemetry-box bg-[#ffffff] dark:bg-[#000000] border border-[#c0c0c0] dark:border-[#404040] rounded-lg p-2.5 flex flex-col gap-2 shadow-xs">
           <div class="flex items-center justify-between text-xs">
             <span class="text-[#000000] dark:text-[#ffffff] flex items-center gap-1.5 text-[11px] font-medium">
-              <span class="relative flex h-2 w-2">
+              <span class="relative flex h-2 w-2 flex-shrink-0">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#808080] opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-[#000000] dark:bg-[#ffffff]"></span>
               </span>
-              Plant System
+              <span class="sidebar-label">Plant System</span>
             </span>
-            <span id="sidebar-status-text" class="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff] bg-[#ffffff] dark:bg-[#000000]">OPTIMAL</span>
+            <span id="sidebar-status-text" class="sidebar-label text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded border border-[#808080] text-[#000000] dark:text-[#ffffff] bg-[#ffffff] dark:bg-[#000000]">OPTIMAL</span>
           </div>
 
           <!-- Run & Uptime Telemetry -->
-          <div class="grid grid-cols-2 gap-1.5 py-1.5 border-y border-[#c0c0c0] dark:border-[#404040] text-[10px] font-mono">
+          <div class="sidebar-label grid grid-cols-2 gap-1.5 py-1.5 border-y border-[#c0c0c0] dark:border-[#404040] text-[10px] font-mono">
             <div>
               <span class="text-[#808080]">RUN: </span>
               <span id="run-id-text" class="font-bold text-[#000000] dark:text-[#ffffff]">INIT</span>
@@ -261,54 +276,31 @@
             </div>
           </div>
 
-          <div class="text-[10px] text-[#404040] dark:text-[#c0c0c0] flex items-center justify-between">
+          <div class="sidebar-label text-[10px] text-[#404040] dark:text-[#c0c0c0] flex items-center justify-between">
             <span>Target:</span>
             <span class="text-[#000000] dark:text-[#ffffff] font-semibold font-mono">NaOH (Caustic)</span>
           </div>
-          <div class="text-[9px] text-[#808080] font-mono">
+          <div class="sidebar-label text-[9px] text-[#808080] font-mono">
             SIL-3 Loop • 1.0 Hz Physical Tick
           </div>
         </div>
 
-        <button id="btn-reset-top" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-[#c0c0c0] dark:border-[#404040] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition shadow-xs" title="Reset Plant Simulation" aria-label="Reset Plant Simulation">
-          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-          <span>Reset Simulation</span>
-        </button>
+        <!-- Footer Action Buttons: Reset Simulation & Theme Toggle -->
+        <div class="sidebar-footer-actions flex items-center gap-1.5">
+          <button id="btn-reset-top" class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-[#c0c0c0] dark:border-[#404040] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition shadow-xs" title="Reset Plant Simulation" aria-label="Reset Plant Simulation">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 flex-shrink-0"></i>
+            <span class="sidebar-label">Reset Simulation</span>
+          </button>
+          <button id="btn-theme-toggle" class="p-1.5 rounded-lg border border-[#c0c0c0] dark:border-[#404040] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition shadow-xs flex-shrink-0" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
+            <i id="theme-icon" data-lucide="moon" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
       </div>
     </aside>
 
     <!-- MAIN WORKSPACE -->
     <main class="flex-1 flex flex-col h-screen overflow-hidden bg-[#ffffff] dark:bg-[#000000]">
-      
-      <!-- TOP HEADER BAR -->
-      <header class="h-10 min-h-[2.5rem] border-b border-[#c0c0c0] dark:border-[#404040] flex items-center justify-between px-4 bg-[#ffffff] dark:bg-[#000000] gap-3 z-10 shadow-xs">
-        <!-- Breadcrumb -->
-        <div class="flex items-center gap-1.5 text-xs text-[#404040] dark:text-[#c0c0c0] whitespace-nowrap flex-shrink-0">
-          <i data-lucide="droplet" class="w-3.5 h-3.5 text-[#000000] dark:text-[#ffffff]"></i>
-          <span class="hover:text-[#000000] dark:hover:text-[#ffffff]">Plant #4</span>
-          <span class="text-[#808080]">/</span>
-          <span class="hover:text-[#000000] dark:hover:text-[#ffffff]">Water Treatment</span>
-          <span class="text-[#808080]">/</span>
-          <span class="font-semibold text-[#000000] dark:text-[#ffffff]">Caustic Dosing SCADA</span>
-        </div>
 
-        <!-- Header Telemetry & Actions -->
-        <div class="flex items-center gap-2.5 flex-shrink-0">
-          <!-- Real-Time Status Pill with LED -->
-          <div id="status-pill" class="status-pill nominal">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#808080] opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-[#000000] dark:bg-[#ffffff]"></span>
-            </span>
-            <span id="status-text">NOMINAL OPERATION</span>
-          </div>
-
-          <!-- Theme Switcher -->
-          <button id="btn-theme-toggle" class="p-1.5 rounded-lg border border-[#c0c0c0] dark:border-[#404040] hover:bg-[#c0c0c0] dark:hover:bg-[#404040] text-[#000000] dark:text-[#ffffff] transition shadow-xs" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme">
-            <i id="theme-icon" data-lucide="moon" class="w-3.5 h-3.5"></i>
-          </button>
-        </div>
-      </header>
 
       <!-- ===================================================================
            VIEW 1: OVERVIEW & FLOWBITE APEXCHARTS TELEMETRY
@@ -879,7 +871,7 @@
   </div>
 
   <!-- Application Logic -->
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=mono_strict"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (window.lucide) {

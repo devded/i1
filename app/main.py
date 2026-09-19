@@ -2,7 +2,7 @@ import os
 from contextlib import asynccontextmanager
 from typing import Optional, List, Dict, Any
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -49,8 +49,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Oldsmar Chemical Dosing Safety Interlock",
-    description="Cyber-physical demonstration of SCADA sensor tampering and IEC 61511 SIS Interlock defense",
+    title="AquaLock SIS — Chemical Dosing Safety Interlock",
+    description="AquaLock SIS: Cyber-physical water safety instrumented system defending SCADA chemical dosing from sensor tampering (IEC 61511 / IEC 62443)",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -63,6 +63,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def add_no_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if path == "/" or path.startswith("/static"):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 
 @app.get("/state", response_model=SystemStateResponse)
@@ -219,4 +230,4 @@ async def serve_index():
     index_path = os.path.join(static_dir, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
-    return {"message": "Oldsmar SCADA Safety Interlock API is running. Dashboard HTML will be served here."}
+    return {"message": "AquaLock SIS Safety Interlock API is running. Dashboard HTML will be served here."}

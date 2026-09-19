@@ -12,8 +12,8 @@ import uvicorn
 
 def print_banner(host: str, port: int):
     print("=" * 80)
-    print("  OLDSMAR WATER TREATMENT PLANT // SCADA CHEMICAL DOSING INTERLOCK")
-    print("  Cyber-Physical Demonstration System (2021 Oldsmar Attack Defense)")
+    print("  AQUALOCK SIS // MUNICIPAL WATER SCADA SAFETY INSTRUMENTED SYSTEM")
+    print("  IEC 61511 Out-of-Band Cyber-Physical Chemical Interlock Defense")
     print("=" * 80)
     print(f"  * Control Room Console Dashboard: http://localhost:{port}/")
     print(f"  * REST API & Telemetry Endpoint:  http://localhost:{port}/state")
